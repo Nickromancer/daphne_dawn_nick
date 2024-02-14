@@ -1,0 +1,1405 @@
+[33mcommit 7cae0453a4430ed405657038ff6305986335abd1[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: Emilia-Victoria <emiliav.helsted@gmail.com>
+Date:   Wed Feb 14 12:32:51 2024 +0100
+
+    Inital Commit, Add author names to README
+
+[33mcommit 4c785788f87b5939c890ac63ddb7ab67d3a635e7[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: philipportner <ortner@tu-berlin.de>
+Date:   Mon Feb 12 16:07:45 2024 +0100
+
+    Adds support for string equivalence, close #581
+    
+    This patch adds support for equality checks between strings.
+    Examples:
+    * string with program argument
+    ```
+    a = "foo";
+    if (a == $b)
+    ```
+    * compare program arguments
+    ```
+    if ($a == $b)
+    ```
+
+[33mcommit 8f5ca5c69356f62fb695743882e9267f0575158f[m
+Author: philipportner <ortner@tu-berlin.de>
+Date:   Mon Feb 12 12:16:43 2024 +0100
+
+    ignore compiler warning from LLVM internals
+
+[33mcommit 83033238915d14aa0584fededb34847fb83cf0c4[m
+Author: philipportner <ortner@tu-berlin.de>
+Date:   Tue Feb 6 11:56:57 2024 +0100
+
+    Write kernel handles invalid ext, close #655
+    
+    The DenseMatrix<VT> write kernel now throws an exception when
+    encountering unknown file extensions. Previously the kernel
+    returned silently and did not notify the user in any way.
+
+[33mcommit b8e8e848f904430016a821b9f07e36634871ae54[m
+Author: philipportner <ortner@tu-berlin.de>
+Date:   Tue Feb 6 10:32:10 2024 +0100
+
+    Adds SIGSEGV signal handler and callstack output
+    
+    Adds a signal handler for SIGSEGV, which is now also used for SIGABRT.
+    The handler function prints the callstack via `backtrace_symbols_fd`
+    and moves the call to `spdlog::error` out of the signal handler as it
+    is not async-signal-safe.
+    
+    Example output which shows that a segmentation fault is triggered
+    in `_write__DenseMatrix_double__char`:
+    
+    ```
+    usr@daphne-container:$ bin/daphne test.daphne
+    bin/daphne(+0x18199e8)[0xaaaaec2799e8]
+    linux-vdso.so.1(__kernel_rt_sigreturn+0x0)[0xffff8998f7a0]
+    daphne/bin/../lib/libAllKernels.so(+0xb37184)[0xffff84e68184]
+    daphne/bin/../lib/libAllKernels.so(_Z5writeI11DenseMatrixIdEEvPKT_PKcP13DaphneContext+0x24)[0xffff84e23b04]
+    daphne/bin/../lib/libAllKernels.so(_write__DenseMatrix_double__char+0x24)[0xffff84deb058]
+    bin/daphne(+0x240f468)[0xaaaaece6f468]
+    [error]: Got an abort signal from the execution engine. Most likely an exception in a shared library. Check logs!
+    [error]: Execution error: Returning from signal 11
+    ```
+    
+    Note: To demangle symbols one can use `c++filt`
+    
+    ```
+    usr@daphne-container:daphne$ bin/daphne test.daphne | c++filt
+    bin/daphne(+0x18199e8)[0xaaaac55699e8]
+    linux-vdso.so.1(__kernel_rt_sigreturn+0x0)[0xffff915bf7a0]
+    daphne/bin/../lib/libAllKernels.so(+0xb37184)[0xffff7764f184]
+    daphne/bin/../lib/libAllKernels.so(void write<DenseMatrix<double> >(DenseMatrix<double> const*, char const*, DaphneContext*)+0x24)[0xffff7760ab04]
+    daphne/bin/../lib/libAllKernels.so(_write__DenseMatrix_double__char+0x24)[0xffff775d2058]
+    bin/daphne(+0x240f468)[0xaaaac615f468]
+    [error]: Got an abort signal from the execution engine. Most likely an exception in a shared library. Check logs!
+    [error]: Execution error: Returning from signal 11
+    ```
+
+[33mcommit 230f4d474e21257019cb2b52375d817083526572[m
+Author: Aristotelis Vontzalidis <avontz@cslab.ece.ntua.gr>
+Date:   Wed Jan 24 18:33:20 2024 +0200
+
+    Distributed pipelines: Runtime support for VectorCombine::ADD.
+    
+    - Added aggregation for distributed pipelines: DistributedCollect kernel aggregates if we have VectorCombine::ADD.
+
+[33mcommit 70582a625e40ed7982eefc8c246f1f44c66edd2c[m
+Author: Stratos Psomadakis <psomas@cslab.ece.ntua.gr>
+Date:   Wed Jan 24 18:14:34 2024 +0200
+
+    Pagerank implementation.
+    
+    - Added a pagerank implementation in DaphneDSL.
+    - Added the required kernels for executing using CSRMatrices.
+    
+    Co-authored-by: Mark Dokter <mark@dokter.cc>
+
+[33mcommit aecf261acab55ea57a0d75c66553a4c7bcac13a6[m
+Author: Aristotelis Vontzalidis <avontz@cslab.ece.ntua.gr>
+Date:   Mon Feb 5 09:58:14 2024 +0100
+
+    DistributePipelinesPass: Insert constant IR arguments to body. (#623)
+    
+    - Distributed workers receive IR code that needs to be computed. It is received as a function that the worker currently pass arguments to. However this causes issues since some optimization passes require some arguments to be constant (which they are, just not declared in the IR).
+    - During DistributePipelinesPass, in case we have constant operations as arguments to a distributed pipeline, we move these operations inside the IR that will be sent to the workers for computation.
+    - Test cases for MatMul on distributed runtime (MatMul did not work before this fix).
+    
+    Closes #557.
+
+[33mcommit ca2e84e1cf109dd32ebc13699fd7705be5af5bc7[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Fri Feb 2 00:53:32 2024 +0100
+
+    Added binning built-in/op/kernel for data preprocessing.
+    
+    - Applies equi-width binning with a given number of bins to the input data.
+    - New DaphneIR operation.
+    - New runtime kernel, registered for pre-compilation.
+    - Unit test cases for the kernel.
+    - New DaphneDSL built-in function.
+    - Script-level test cases for the built-in function.
+    - Updated DaphneDSL documentation.
+    - While binning has very much in common with quantization, I didn't extend the existing quantization built-in/op/kernel, since quantization seems to be slightly different in terms of zero-handling.
+    - Furthermore: a little additional utility for the DaphneDSL parser: checkNumArgsIn(), which checks if the number of arguments of a call to a built-in function is exactly one of multiple given options.
+
+[33mcommit 5bad720e474dacd7b58e48275afab413a5fa1f1d[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Thu Feb 1 14:34:28 2024 +0100
+
+    Added recode built-in/op/kernel for data preprocessing.
+    
+    - Recode applies a dictionary encoding to the input data and returns the encoded data as well as the decoding dictionary.
+    - New DaphneIR operation, including type and shape inference.
+    - New runtime kernel, registered for pre-compilation.
+    - Unit test cases for the kernel.
+    - New DaphneDSL built-in function.
+    - Script-level test cases for the built-in function.
+    - Updated DaphneDSL documentation.
+
+[33mcommit e990e22d1f02364359213694a3202041ae3a9be0[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Thu Feb 1 14:04:26 2024 +0100
+
+    A utility for infering the result types of newly created ops with multiple results.
+    
+    - When creating a new DaphneIR operation in the DaphneDSL or SQL parser, we should not duplicate the inference logic for the result types, but rather call the type inference.
+    - For that purpose, we already had a helper function, but that supports only operations with exactly one result.
+    - This commit adds a new variant of the helper function, which also supports ops with multiple results.
+
+[33mcommit a655af557c761c8b74dfaa6a4e3cf232093a122c[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Thu Feb 1 13:58:41 2024 +0100
+
+    Utility in Matrix/DenseMatrix/CSRMatrix to derive the same data type with another value type.
+    
+    - There are sometimes cases when a data+value type is given as a template parameter, and one wants to derive the same data type with another value type (for instance in unit test cases).
+    - The classes of the Matrix class hierarchy have a little utility for that purpose now.
+    - For instance, when a template parameter DT is given (that could be DenseMatrix<X> or CSRMatrix<X> for some value type X), one can say DT::WithValueType<Y> for some value type Y (which yields DenseMatrix<Y> or CSRMatrix<Y>, respectively).
+
+[33mcommit 54bcd3f40366de0b28f684412c67544d950b168d[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Thu Jan 25 18:41:42 2024 +0100
+
+    [BUGFIX] Static/dynamic allocation of an array.
+    
+    - An array whose size depends on function parameters was allocated statically.
+    - The function was called with invalid parameters (in a test case).
+    - This resulted in a compiler warning and could crash at run-time.
+    - Now, the array is allocated dynamically and there is an extra check for invalid arguments.
+
+[33mcommit aeb384e008e997154ad41a35da63aa19f20b0d90[m
+Author: philipportner <ortner@tu-berlin.de>
+Date:   Thu Jan 25 09:08:07 2024 +0000
+
+    Replacing deprecated .isa<T>() calls.
+    
+    Replaces deprecated T2.isa<T1>() with llvm::isa<T1>(T2).
+    https://mlir.llvm.org/deprecation/
+
+[33mcommit 3752b4185103c2c69615a492d2a6e221dc53a871[m
+Author: philipportner <ortner@tu-berlin.de>
+Date:   Thu Jan 25 08:42:04 2024 +0000
+
+    [MINOR] fix compiler warning and remove unused fn
+
+[33mcommit 3865a2936f683ae4df4c52b7822e4a0321f04834[m
+Author: AlexRTer <74372589+AlexRTer@users.noreply.github.com>
+Date:   Tue Jan 23 23:11:59 2024 +0100
+
+    [DAPHNE-#572] Bounds checks for left and right indexing (#648)
+    
+    This commit adds boundary checks for the kernels Extract-/Slice-/Insert- Row/Col as well as to DenseMatrix and Frame. To that end, the parameters lowerIncl and upperExcl in DaphneDSL scripts are now cast to int64_t instead of size_t before forwarding them to these kernels. Previous assertions in these kernels were turned into exceptions, and are now guaranteed to be executed.
+    
+    Furthermore, compiler-debug-cuda.txt and compiler-trace-cuda.txt have both been added to .gitignore.
+    
+    Features:
+    - Boundary checks for SliceRow, SliceCol, InsertRow, InsertCol, ExtractRow, ExtractCol: Check if arguments have matching dimensions and are within bounds then throws std::runtime_error or std::out_of_range accordingly (e.g. invalid argument '7' passed to ExtractRow: out of bounds for frame with row boundaries '[0, 5)')
+    - Boundary checks for DenseMatrix.cpp and Frame.h for constructions with rowLowerIncl, rowUpperExcl, colLowerIncl, colUpperExcl (like when called through their slice methods): Check if src is null and whether arguments are within bounds and throws according errors (e.g. invalid arguments '-1, 1' passed to dense matrix constructor: it must hold 0 <= rowLowerIncl <= rowUpperExcl <= #rows and rowLowerIncl < #rows (unless both are zero) where #rows of src is '5')
+    
+    Changes:
+    - Added template parameter for lowerIncl and upperExcl so they must not be size_t
+    - DenseMatrix and Frame now use int64_t for rowLowerIncl, rowUpperExcl, colLowerIncl, colUpperExcl
+    - Slice/Insert/Extract arguments in DaphneDSL scripts are now passed as SI64 instead of Size
+      - Added instantiations with int64_t to kernels.json for Slice-/Insert- Row/Col
+      - Slight change to test/codegen/ew.mlir to reflect above changes
+    - Add tests for std::out_of_range errors for all above kernels and added InsertRowTest.cpp, InsertColTest.cpp
+    - Frame.h had an assert (line 266) that was conditional before, it is now always checked as the bound checks allow the previous exception
+    
+    Closes #572.
+
+[33mcommit 36bde18c6c57931a8fc1a53bc114ec9c8913ef1b[m
+Author: Quentin Guilloteau <guillo0001@DMI-23-PC-30.dmi.unibas.ch>
+Date:   Mon Jan 22 17:03:09 2024 +0100
+
+    get_topology: get the same behavior as before #563 but with hwloc
+
+[33mcommit 1f3da54eae89aabd1cc99d68f88c4b0ac530a7bc[m
+Author: Quentin Guilloteau <guillo0001@DMI-23-PC-30.dmi.unibas.ch>
+Date:   Mon Jan 22 12:03:17 2024 +0100
+
+    Fix #650: destroy hwloc_topology_t instance
+
+[33mcommit ccba9387a9b33e5c6b46df0aa3477d3bbab0fbfd[m
+Author: Jonas Henrique Muller Korndorfer <hevoga60@dmi-21-pc-09.dmi.unibas.ch>
+Date:   Fri Dec 15 17:50:03 2023 +0100
+
+    [DAPHNE-#567,#647] Adding AUTO option to calculate a grain size for SS
+    
+    This pull request includes the implementation for the automated task grain size selection in DAPHNE. Here we add a new option for partitioning strategy in DAPHNE called "AUTO". When a user selects AUTO, DAPHNE will automatically calculate a fixed task grain size which frequently achieves high performance.
+    
+    This is a part of #567 submitted in PR #647
+    
+    Closes #647
+
+[33mcommit af6c19472f690f4b8c8852ecdb1dadd9ac4c6766[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Dec 20 15:20:08 2023 +0100
+
+    [MINOR] Test cases fail in debug mode due to missing columnTypes
+    
+    The test right_indexing_success_2.daphne will fail in debug mode (where assertions fire) due to ExtractCol op not providing a filled columnTypes vector. So this is a work around rather than a bug fix.
+
+[33mcommit 63cea53351e986ad9a9927ebcbf9a2e3cfaa4ccd[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Dec 20 15:14:21 2023 +0100
+
+    [MINOR] Remove unwanted assertions in the CUDA version of FillOp
+    
+    These assertions would make right_indexing_success_2.daphne fail.
+
+[33mcommit ac78f3f22fce65069fa77356eff842746f0787c4[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Tue Dec 19 15:38:48 2023 +0100
+
+    [BUGFIX] Fix matrix_other.py test
+    
+    The test fails with the error message "A factor Ui is exactly singular, so the solution could not be computed". Adding an element-wise multiply to the test script fixes this.
+
+[33mcommit 7bff7e1ad9bee5c973cc45e1714b62aab4c9128d[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Fri Nov 3 12:55:17 2023 +0100
+
+    [MINOR] Support log levels from env var in run_tests
+
+[33mcommit caba2da1b5a6cb33f582f33ed10ce637be804781[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Mon Nov 6 15:52:50 2023 +0100
+
+    [MINOR] Add llvm-tools to github-actions container
+    
+    The lit python package is needed by MLIR codegen tests. This is provided by the Ubuntu 20 package llvm-10-tools.
+    
+    Also added the latest cmake to the containers as usual.
+
+[33mcommit 927d493c65a21f973d5aaa162e69592d184763a4[m
+Author: AlexRTer <74372589+AlexRTer@users.noreply.github.com>
+Date:   Sat Dec 9 19:11:51 2023 +0100
+
+    [DOC] Fixed broken links in docs (#645)
+    
+    - Two links in containers/README.md and doc/README.md had small typos.
+    - They now redirect to the intended directories.
+
+[33mcommit dc8429e22de941054c5e8eab688e4eacbf24efd3[m
+Author: AlexRTer <74372589+AlexRTer@users.noreply.github.com>
+Date:   Sat Dec 9 19:08:14 2023 +0100
+
+    [DAPHNE-#614] Support missing elementwise unary functions in elementwise unary kernels (#644)
+    
+    - This commit implements the missing unary functions mentioned in #614 as well as a check for the respective function domains and updates the relevant documentation.
+    -  Unary functions: natural log, sin, cos, tan as well as arcus-(sin/cos/tan) and (sin/cos/tan)-hyperbolicus.
+    -  Check if passed arg lies within the domain of the respective function.
+       - ln: [-0, inf], sqrt: [-0, inf], asin: [-1, 1], acos: [-1, 1]
+       - For ln this includes 0, which maps to -inf.
+       - tan domain checks are unnecessary due to FP imprecision.
+       - If arg is outside of the domain, a std::domain_error is thrown.
+    - Added test cases for new and already existing elementwise unary functions.
+    - Closes #614.
+
+[33mcommit 8c12dbc7101a63a75448b08abaea458876472783[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Mon Dec 4 18:05:41 2023 +0100
+
+    [MINOR] Add missing instantiation for FillOp
+    
+    Another data type was added to FillOp in kernels.json which was not tested when compiling for CUDA...
+
+[33mcommit 995bd12f1a2d75246a1c59a449dc12dd84dfe5e8[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Mon Dec 4 00:37:11 2023 +0100
+
+    [MINOR] Docker container packages
+    
+    This commit adds the latest stable cmake and some packages:
+    * ccache - a compile cache for quicker recompiles
+    
+    Needed by deliverable D7.3
+    * python3-dev
+    * python3-networkx
+    * python3-pip
+    * graphviz-dev
+    
+    Also adding a path to NSight Systems that seems to be installed with the CUDA base image
+
+[33mcommit 3a7165217a2a2a7b9e1cb4486df8860e9667d127[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Nov 29 01:53:41 2023 +0100
+
+    [MINOR] Fix CUDA compilation with LLD
+    
+    For whatever reason the CMake configuration of CUDA fails with LLD. After the CMake config is done, nvcc and lld work just fine.
+
+[33mcommit ea33daa746668e90b946ce670aeab243b8a63a33[m
+Author: Aristotelis Vontzalidis <avontz@cslab.ece.ntua.gr>
+Date:   Tue Nov 21 15:56:22 2023 +0200
+
+    [MINOR] Silence compiler warning for SQLResultTest.
+    
+    SQLResultTest.cpp was missing a new line at the end of file.
+    The warning:
+    backslash-newline at end of file
+       28 | #define MAKE_TEST_CASE(name, count) \
+
+[33mcommit c0a498c215f2dc17017b50db5acb94b7ad3a3cb6[m
+Author: Aristotelis Vontzalidis <avontz@cslab.ece.ntua.gr>
+Date:   Tue Nov 21 15:55:26 2023 +0200
+
+    [MINOR] Added missing licence to distributed.daph script.
+
+[33mcommit 5183080b926b647ca707a36a94ace346b35c7a95[m
+Author: inikokali <56083118+inikokali@users.noreply.github.com>
+Date:   Tue Nov 21 15:43:25 2023 +0200
+
+    Integration of MPI testing (#639)
+    
+    Previously, MPI testing occurred in a separate file from the main test.sh script responsible for all testing operations. We can now test MPI using the same Daphne scripts employed for gRPC testing.
+    
+    - Added --mpi flag to `test.sh`.
+    - Added a testcase for MPI in `DistributedTest.cpp`.
+    - Minor changes in `Utils.h`, specifically in runProgram() so as it can be used to run MPI tests.
+    - Renamed the old `mpi_testing` bash script to `mpi_example`.
+    - Removed a simple `.daph` script that we used during the early development of MPI.
+
+[33mcommit ae1d0215220c6bbf3cb80a978c980909df5d00d8[m
+Author: inikokali <56083118+inikokali@users.noreply.github.com>
+Date:   Fri Nov 17 23:32:27 2023 +0200
+
+    [DAPHNE-#613] Support missing aggregation functions in aggregation kernels (#638)
+    
+    - The aggregation function VAR is not supported for any of the AggAll, AggRow, AggCol kernels, and STDDEV is not supported for full aggregation (AggAll) and row-wise aggregation (AggRow).
+    - This pull request proposes implementations for the above aggregation functions following the implementation of the MEAN aggregation function in each instance.
+    - Changes in files AggAll.h, AggRow.h, AggCol.h related to the implementation of STDDEV and VAR.
+    - Updated file AggOpCode.h to add VAR opCode.
+    - Updated file kernels.json to add STDDEV and VAR opCodes where needed.
+    - Include test cases to ensure the validity of the implementation. There are tests for both STDDEV and VAR aggregatin functions for all three kernels (AggAll, AggRow, AggCol), which can be found in the related test cases (AggAllTest.cpp, AggRowTest.cpp, AggCoTest.cpp). Furthermore, these tests to approximate comparisons now to avoid test failures due to minor floating-point deviations.
+    - Updated DaphneLib script-level test cases matrix_agg.daphne and matrix_agg.py.
+    - Closes #613.
+
+[33mcommit 681ad586a23716f748e5e1e3dfc4c371a83f243f[m
+Author: Tom Schwarzburg <tom.schwarzburg@mailbox.tu-dresden.de>
+Date:   Fri Nov 17 11:43:22 2023 +0100
+
+    SQLParser: Support for * in SELECT and GROUP BY (#588)
+    
+    New features:
+    
+    - SQLParser SELECT now supports using * (select all columns of result) and f.* (select all columns from specified frame from result)
+    - SQLParser GROUP BY now supports using * (select all input columns for grouping) and f.* (select all input columns from one frame for grouping)
+    
+    Changes:
+    
+    - ExtractCol Kernel now supports f.* as an input (Extract all Columns for a specified frame)
+    - GroupBy Kernel now supports * and f.* as an input (Group over all input columns / group over all input columns from frame f)
+
+[33mcommit e6df5694d9bfe839189bb982b33eb93a51a3cfff[m
+Author: Tom Schwarzburg <tom.schwarzburg@mailbox.tu-dresden.de>
+Date:   Thu Nov 16 14:08:52 2023 +0100
+
+    SQLParser: Introduce DISTINCT clause (#564)
+    
+    New feature:
+    - Allow the use of DISTINCT clause in SQL statements to only return unique rows
+    - Allow the aggregation word in SQL commands to be any type of lower/upper case
+    
+    Changes:
+    - Introduce DISTINCT in the SQLParser
+    - Allow the use of the Group Kernel with "*" (group over all columns in the input frame) (not yet in SQL CLI)
+    
+    Update:
+    - Fixes issue LLVM lowering function with variable number of operands #562. Therefore Group by aggregations are now compatible with DISTINCT
+
+[33mcommit b3ab5753abaa5af4f1ce5d2fb1555c26a00c77aa[m
+Author: philipportner <philipp.ortner@student.tugraz.at>
+Date:   Mon Nov 13 13:24:12 2023 +0100
+
+    [MINOR] add ccache, lld to CMakeLists.txt
+    
+    Adds a check for `ccache` and `lld` to the `CMakeLists.txt` and uses
+    them if available.
+    
+    `ccache` should help with incremental compilation while developing
+    DAPHNE.
+    
+    `lld` reduces the linking time significantly.
+    
+    Also enables a flag that produces a `compile_commands.json` in the
+    `build/` directory. This file is used by different development tools and
+    is an easy way to enable proper LSP functionality (VSCode cpp or clangd
+    extension or coc-clangd in Neovim).
+    
+    - https://ccache.dev/
+    - https://lld.llvm.org/
+    - https://code.visualstudio.com/docs/cpp/faq-cpp#_how-do-i-get-intellisense-to-work-correctly
+    - https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd
+    - https://github.com/clangd/coc-clangd
+
+[33mcommit dc2ed63d2bdf49bf77e1608ab698f72b0a395f8e[m
+Author: Philipp Ortner <philipp.ortner@student.tugraz.at>
+Date:   Fri Nov 10 19:46:45 2023 +0100
+
+    MLIR-based code generation pipeline (#633)
+    
+    As an alternative way to implement DAPHNE operators, this commit provides an MLIR-based code generation pipeline which progressively lowers the DaphneIR available after parsing the DaphneDSL script to operations in either the same dialect or operations from other dialects. With that, DAPHNE can optionally replace certain kernels by generating code directly, and also perform a hybrid compilation approach where we mix kernel calls with code generation in order to exploit advantages of both, precompiled kernel libraries and code generation.
+    
+    This includes the following features:
+    - Documentation (Codegen.md).
+    - Code generation passes src/compiler/lowering/.
+    - Kernels to facilitate interoperability between the memref-dialect and the DenseMatrix runtime object.
+    - CLI arguments to enable code generation (--mlir_codegen and --mlir_codegen --mlir_hybrid_codegen) and explain-passes (--explain mlir_codegen).
+    - Script-level tests that run daphne with a DaphneDSL script as input in test/api/cli/codegen/.
+    - llvm-lit-based unit tests of the IR produced from passes/pass pipelines in test/codegen/ using intermediate IR as input (.mlir files).
+    - The daphne-opt tool, DAPHNE's own version of the mlir-opt tool with its source files in daphne-opt/ and a new build target daphne-opt.
+    
+    daphne-opt is included since the lit tests require the daphne-opt target. With daphne-opt one can test passes in isolation by providing the input IR for a pass to daphne-opt and the correct flag to run the pass (or
+    a pass pipeline) on the IR. The daphne-opt tool inherits all the functionality of the mlir-opt tool.
+    
+    The list of affected operations (only when daphne is executed with the --codegen flag): MatMulOp, MapOp, Ew(Sqrt|Abs|Add|Sub|Mul|Div|Pow|Mod)Op, AllAggSumOp, ConvertDenseMatrixToMemRefOp, ConvertMemRefToDenseMatrixOp.
+    
+    daphne --mlir_codegen --mlir_hybrid_codegen can be used to disable code generation for certain operators in order to run a hybrid compilation pipeline (currently only the MatMulLoweringPass is affected by this.)
+
+[33mcommit e50c5e734711d005ae4937f521f58492e1330bb9[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Mon Nov 6 15:49:33 2023 +0100
+
+    [DAPHNE-#637] Missing type inference of eigen()
+    
+    This commit adds type inference to mlir::daphne::EigenOp
+    
+    Closes #637
+
+[33mcommit b41fa58ed7f2ac2e92bc7a1d44a5a3631ae8b9ca[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Thu Nov 2 15:53:00 2023 +0100
+
+    [MINOR] Separate listing of 3rd party deps version info; silenced cusparse deprecation
+    
+    * This change puts all the third party software package versions into a separate text file to be able to change them in a central location if necessary
+    * Furthermore, deprecation warnings of CUSPARSE are silenced with a cpp macro.
+
+[33mcommit 28df1ae1271786f6d62dc2f62de0865336bbb929[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Tue Oct 31 15:00:29 2023 +0100
+
+    [MINOR] test.sh updates; Docker CUDA base image version 12.2.2
+    
+    * The changes to test.sh enable the use of the llvm lit tool that is needed by the upcoming MLIR codegen feature.
+    
+    * CUDA base image version bump for our Docker images
+
+[33mcommit 932038c2b075af0c9bf143c028f3c9b4f8c1117d[m
+Author: Aristotelis Vontzalidis <avontz@cslab.ece.ntua.gr>
+Date:   Mon Oct 30 12:39:04 2023 +0200
+
+    [MINOR] IR parse for MatrixType properties. (#634)
+    
+    - While parsing a matrix type the "sparsity" and "rerpesentation"
+    properties can both exist. In that case trying to parse one of them while
+    multiple exist, can make the parser emmit errors. We should consider
+    them optional while trying to parse them in the loop.
+    - Extended testcase for IR parsing after SelectMatrixRepresentationPass.
+
+[33mcommit daf7067cc9ce0617c9018317de25da4f84543caa[m
+Author: DamianDinoiu <44102159+DamianDinoiu@users.noreply.github.com>
+Date:   Fri Oct 27 22:56:58 2023 +0200
+
+    [BUGFIX] Enable shape inference for frame type (#626)
+    
+    - DAPHNE supports shape inference for frames but the feature was disabled due to a bug.
+    - The logic should be further revised as it is redundant to throw an error.
+
+[33mcommit 39908ff69fb4bc74f85c1edcab171206fbcc3bb6[m
+Author: inikokali <56083118+inikokali@users.noreply.github.com>
+Date:   Fri Oct 27 23:09:44 2023 +0300
+
+    [DAPHNE-#615] Constant folding for EwLogOp (#630)
+    
+    - Bug: The EwLogOp implementation currently computes the element-wise logarithm of x to the base b using the ilogb function, which returns an integer value.
+    - Solution: This commit fixes the issue by replacing the use of ilogb with the standard C++ logarithm function log to correctly compute the element-wise logarithm in floating-point.
+    - The code changes involve converting the llvm::APFloat values to standard double-precision floating-point numbers using the convertToDouble method and applying the log function for the correct result.
+    - A test case that had failed so far could be uncommented with this fix.
+    - Closes #615.
+
+[33mcommit 445086f44c7765a861f90a961a85ae15b93bce20[m
+Author: Aristotelis Vontzalidis <avontz@cslab.ece.ntua.gr>
+Date:   Fri Oct 27 11:49:46 2023 +0300
+
+    [BUGFIX] Fixed a memory leak on distributed kernels.
+    
+    - Distributed kernels are creating slices of matrices which need to be
+    destroyed after use.
+
+[33mcommit 5cca09c1c491227c95ba181e982e24c4d195f6f8[m
+Author: avontz@cslab.ece.ntua.gr <avontz@cslab.ece.ntua.gr>
+Date:   Tue Apr 4 16:09:39 2023 +0300
+
+    [DISTRIBUTED] Send data in chunks and serializer improvements.
+    
+    - Distributed runtime was limited to sending messages of maximum
+    size INT_MAX for each message (both for MPI and gRPC). With this
+    commit we are no longer limited by this and we serialize data into
+    chunks which are then sent to the workers, allowing us to send bigger
+    messages.
+    - Added a new command line arg to set maximum chunk size for distr
+    messages (default ~2GB).
+    - Use pointer for holding buffer inside serialization iterator.
+    - DaphneSerializer std::vector buffer, used reserve() and
+    capacity() methods to manage available space. However, we should not write to
+    vector's memory (even if reserved) without first resizing the buffer. Therefore replaced
+    reserve() calls with resize(). Similar replacements for MPI and gRPC worker.
+    - Due to resize() use, it's best to use the smallest possible chunk size.
+    - Added test case for distributed chunked messages.
+
+[33mcommit f475e188316433c3befe319b7745ac1d1b3e8627[m
+Author: Aristotelis Vontzalidis <avontz@cslab.ece.ntua.gr>
+Date:   Mon Oct 16 13:33:32 2023 +0300
+
+    [MINOR] Catch error response for distributed worker.
+    
+    - DistributedCompute kernel using synchronous gRPC did not check if
+    worker threw an error.
+
+[33mcommit cba0f6981ea2a5c5f9d2f3c544ae7b1b15361afe[m
+Author: Lachezar Nikolov <74593108+lachezar-n@users.noreply.github.com>
+Date:   Tue Oct 3 23:41:21 2023 +0200
+
+    [DAPHNE-#522] DaphneLib complex control flow (#574)
+    
+    - So far, DaphneLib (DAPHNE's Python API) did not directly support complex control flow.
+    - Using Python's control flow statements was not possible due to the lazy evaluation of DaphneLib, or did not result in the generation of the appropriate DaphneDSL control flow constructs.
+    - Now, DaphneLib supports lazily evaluated complex control flow statements.
+      - if-then-else
+      - for/while/do-while loops
+      - user-defined functions
+    - Added numerous script-level test cases comparing the outputs of equivalent DaphneDSL and DaphneLib scripts.
+      - Some of those needed to be commented out, due to current limitations in DaphneDSL.
+    - Added basic documentation (API reference),
+    - Closes #522.
+
+[33mcommit 02c0686c001c18e27b5ea51f38733dcb1e0a8d54[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Sep 27 17:47:55 2023 +0200
+
+    [MINOR] Change output path of libProto.so
+    
+    Another shared library is built by DAPHNE since 888fb22a4ee144f6deb106f46e286e7160332132. Changing output directory to make things work again with our container images and binary releases.
+
+[33mcommit c5e3e63b171a21968b7fb0d567c7ce7e6f727602[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Fri Sep 22 21:42:00 2023 +0200
+
+    [MINOR] Fixing context object usage in MultiThreadedKernelTest
+    
+    Previously no context object was passed (nullptr) to some kernels. Now that these kernels changed (e.g., dctx->logger->debug("my message"), the missing context makes them segfault.
+
+[33mcommit e430953093b8ea12c2bb466b67eaf7093ac97a94[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Sep 20 20:42:00 2023 +0200
+
+    [BUGFIX] Correct transpose of view matrices
+    
+    A vector can be transposed without data movement if it is not a shallow copy of a larger matrix. The previous condition testing numCols and rowSkip is not sufficient and replaced by a boolean that is saved when creating the view.
+
+[33mcommit b1d47d26b3b7786712e23ca7581e74bbbf65a8d2[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Sep 13 19:42:00 2023 +0200
+
+    [MINOR] Only set num-threads when used
+    
+    With this commit, we overwrite the user config value of numberOfThreads only with the command line supplied value if it is not the default value. Before this change, the value passed via configuration file was overwritten in any case.
+
+[33mcommit 7c4580fe9974e11e57e6f72847683d93d5903752[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Sep 6 00:38:58 2023 +0200
+
+    [DAPHNE-#606] Some INT/FLOAT literal suffixes from C++ in DaphneDSL
+    
+    This change introduces some of the C++ literal suffixes that make writing single precision floats or unsigned integers way more convenient than ``x = as.f32(5.0);`` -> ``x = 5.0f;``
+    
+    Closes #606
+
+[33mcommit dd39aef9fe791489bb181e4a863da06494ea67fb[m
+Author: m-birke <wesci@web.de>
+Date:   Thu Sep 21 10:03:49 2023 +0200
+
+    [DOC, DAPHNE-#619] Add more documentation regarding script arguments
+    
+    Closes #619, Closes #620
+
+[33mcommit 618e94888ebf44b8c91999c9c32debaa8268c573[m
+Author: Aristotelis Vontzalidis <avontz@cslab.ece.ntua.gr>
+Date:   Wed Sep 20 14:36:06 2023 +0300
+
+    Fix MPI + removed unecessary comments.
+    
+    - DistributedPipelines are executed by using Distributed kernels (i.e.
+    Distribute.h, Collect.h etc.). These kernels should be implemented as
+    stand-alone (so that the compiler can directly use them in the future if
+    needs to). MPI implementation was chaining execution from
+    DistributedCompute.h kernel to DistributedCollect.h, sending messages
+    from compute step and waiting for responses directly
+    after (at collect step). This approach works for pipelines but if
+    the compiler ever needs to single-use Distributedcollect.h,
+    the kernel should be callable as a
+    stand-alone kernel. This is now fixed.
+    - Removed unnecessary commented-out debug messages.
+
+[33mcommit ad74dad889d18fc2a17d7d6bc3905f791fe2d0b3[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Fri Sep 8 18:42:00 2023 +0200
+
+    [DAPHNE-#587] Apache Arrow 13.0.0 + compression support
+    
+    Added all compression options to the Arrow compilation. This solves parts of the problems described in #587. Reading certain parquet files now does not fail right away due to lack of compression formats support. Parsing correctly is still an issue there.
+
+[33mcommit 5413fe6115f39e7f11c6945e3b5ee8f5b264f7f9[m
+Author: Stratos Psomadakis <774566+psomas@users.noreply.github.com>
+Date:   Tue Jul 4 16:16:14 2023 +0300
+
+    [DAPHNE-#554] Use hwloc to query CPU topology
+    
+    Closes #554
+
+[33mcommit 3708930451439c997669247b2923a6c69c18cb08[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Fri Sep 15 23:23:33 2023 +0200
+
+    [DAPHNE-#611] Fixing vectorized transpose + mat mult
+    
+    In some situations while using vectorized execution, matrix multiplication becomes a dot product which did not handle the passed transpose flags correctly.
+    This commit also removes initializing the result matrix to zero (this might have been a debugging artifact).
+    
+    Closes #611
+
+[33mcommit 2c1b7013dfea7e7ad839b40a93bbb10cb6edd9b2[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Thu Sep 14 22:33:32 2023 +0200
+
+    More DaphneDSL built-ins available in DaphneLib.
+    
+    - This commits make many more DaphneDSL built-in functions available through DaphneLib (DAPHNE's Python API).
+    - Still not included are most relational operations as well as a few special operations.
+    - Added a few more kernel instantiations in kernels.json.
+    - Added a basic set of script-level test cases comparing the outputs of DaphneDSL and DaphneLib.
+    - Updated DaphneLib documentation.
+    - Closes #602.
+
+[33mcommit 825764e49189ef0eb2b352c98b4b413e7987525e[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Thu Sep 14 17:06:15 2023 +0200
+
+    [MINOR] A few comments related to bugs and missing built-ins.
+
+[33mcommit 7f5fdb6b238b64db08631fed714cc8795091f315[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Thu Sep 14 15:51:10 2023 +0200
+
+    Registered the diagVector-kernel in kernels.json.
+    
+    - The diagVector-kernel was implemented some time ago, but so far, it wasn't registered for pre-compilation in kernels.json.
+    - Consequently, the diagVector() built-in function in DaphneDSL couldn't be used.
+    - This commit registeres the diagVector-kernel in kernels.json.
+    - This required a slight adjustment to the kernel: the data type of the result had to be made a template parameter.
+      - Otherwise, there was a problem with the generation of the kernel function name.
+
+[33mcommit 96fbecb31a9c208087725d8587f17e8c12e8671e[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Fri Sep 8 19:58:21 2023 +0200
+
+    [MINOR] Fixed compiler warnings
+    
+    This commit fixes two compiler warnings.
+    - an unnecessary declaration
+    - a control flow issue that would resultin a missing return value
+
+[33mcommit 2fc8a9ee572be441ffc72528bb1ec20f7ee7f478[m
+Author: Marcus Paradies <marcus.paradies@gmail.com>
+Date:   Mon Sep 4 08:34:16 2023 +0000
+
+    [DAPHNE-#582] Fix passing str variable to readFrame/readMatrix
+    
+    This commit fixes a crash when passing "dynamic strings" that have not yet been materialized in the paring stage to the getMetaData() function. The current solution is to move this functionality out of the parsing stage and into the type inference stage of the DAPHNE compiler.
+    
+    Incorporated review suggestions
+    
+    - Implement DaphneInferFrameLabelsOpInterface for ReadOp
+    - Added comment lines to test scripts
+    - Fixed IsConstant Helper function for string types
+    - Added further example for dynamic path computation and fixed null string problem - still does not work since the string cannot be (yet) computed at compile time
+    
+    Fixes daphne-eu/daphne#582
+    Closes daphne-eu/daphne#598
+
+[33mcommit 97dd18998db3b05999ff21a12716bfd3d59bdfc2[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Sat Sep 2 11:42:00 2023 +0200
+
+    [MINOR, DAPHNE-$604] Silence compiler warning "condition always true"
+    
+    Looks like the argument to the constantOfAnyType has been forgotten.
+    
+    Closes #604
+
+[33mcommit 827340fe84812ac13052d61ec5472e3342ce09f8[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Tue Sep 5 13:42:00 2023 +0200
+
+    [MINOR, DAPHNE-$604] Silence compiler warning in MetaDataParser
+    
+    The warning:
+    daphne/src/parser/metadata/MetaDataParser.cpp: In static member function 'static FileMetaData MetaDataParser::readMetaData(const std::string&)':
+    daphne/src/parser/metadata/MetaDataParser.cpp:28:56: warning: 'nlohmann::basic_json<ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType>' may not intend to support class template argument deduction [-Wctad-maybe-unsupported]
+       28 |     nlohmann::basic_json jf = nlohmann::json::parse(ifs);
+          |                                                        ^
+    daphne/src/parser/metadata/MetaDataParser.cpp:28:56: note: add a deduction guide to suppress this warning
+
+[33mcommit 05480b2ae91a4639a5a45498fc3e3f9377df58a7[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Sun Sep 3 12:42:00 2023 +0200
+
+    [MINOR, DAPHNE-$604] Silence compiler warning in DaphneSerializer
+    
+    The problem here is the use of "size_t" instead of "size_t[]" as the data type for the unique pointer. I went ahead and changed the whole line to make use of "auto" and "make_shared" to make my IDE happy ;-)
+    
+    The warning:
+    In file included from /usr/include/c++/12/memory:75,
+                     from /home/mdokter/code/daphne-eu/daphne/src/runtime/local/datastructures/IAllocationDescriptor.h:19,
+                     from /home/mdokter/code/daphne-eu/daphne/src/runtime/local/datastructures/DataPlacement.h:19,
+                     from /home/mdokter/code/daphne-eu/daphne/src/runtime/local/datastructures/AllocationDescriptorHost.h:19,
+                     from /home/mdokter/code/daphne-eu/daphne/src/runtime/local/datastructures/DenseMatrix.h:19,
+                     from /home/mdokter/code/daphne-eu/daphne/src/runtime/local/io/DaphneSerializer.h:23,
+                     from /home/mdokter/code/daphne-eu/daphne/src/runtime/local/datastructures/CSRMatrix.cpp:17:
+    In member function 'void std::default_delete<_Tp>::operator()(_Tp*) const [with _Tp = long unsigned int]',
+        inlined from 'std::unique_ptr<_Tp, _Dp>::~unique_ptr() [with _Tp = long unsigned int; _Dp = std::default_delete<long unsigned int>]' at /usr/include/c++/12/bits/unique_ptr.h:396:17,
+        inlined from 'static size_t DaphneSerializer<CSRMatrix<ValueType>, false>::serialize(const CSRMatrix<ValueType>*, char*, size_t, size_t) [with VT = double]' at /home/mdokter/code/daphne-eu/daphne/src/runtime/local/io/DaphneSerializer.h:603:5:
+    /usr/include/c++/12/bits/unique_ptr.h:95:9: warning: 'void operator delete(void*, std::size_t)' called on pointer returned from a mismatched allocation function [-Wmismatched-new-delete]
+       95 |         delete __ptr;
+          |         ^~~~~~~~~~~~
+    /home/mdokter/code/daphne-eu/daphne/src/runtime/local/io/DaphneSerializer.h: In static member function 'static size_t DaphneSerializer<CSRMatrix<ValueType>, false>::serialize(const CSRMatrix<ValueType>*, char*, size_t, size_t) [with VT = double]':
+    /home/mdokter/code/daphne-eu/daphne/src/runtime/local/io/DaphneSerializer.h:532:42: note: returned from 'void* operator new [](std::size_t)'
+      532 |         std::unique_ptr<size_t> new_rows(new size_t[arg->getNumRows() + 1]);
+          |                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[33mcommit 6033ae73e77cb7832feb2e6b6b60039019ee9d83[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Fri Sep 1 10:42:00 2023 +0200
+
+    [MINOR, DAPHNE-$604] Overwrite libdir only if not empty
+    
+    The user config provided libdir string should only be overridden with the command line parameter if that one is not an empty string.
+
+[33mcommit 5679773b66417c43b21371597d6a9172dcc95c8f[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Thu Aug 31 09:42:00 2023 +0200
+
+    [MINOR, DAPHNE-$604] Loggers for parser and compiler
+    
+    Introduced two new loggers for debug output in the parser and compiler areas of DAPHNE
+
+[33mcommit 888fb22a4ee144f6deb106f46e286e7160332132[m
+Author: Aristotelis Vontzalidis <avontz@cslab.ece.ntua.gr>
+Date:   Wed Sep 6 15:58:35 2023 +0300
+
+    Implementation of synchronous gRPC.
+    
+    - Added an additional distributed backend, synchronous gRPC which uses
+    threads to make multiple calls concurrently.
+    - Reuse of grpc stubs for asynchronous and synchronous grpc
+    implementations, by storing them to the DistributedContext obj.
+
+[33mcommit f69d4d3f04fe071b916e529cce18be3763038385[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Tue Aug 29 16:42:00 2023 +0200
+
+    [DAPHNE-#596] CUDA aggregate all
+    
+    This commit adds the SUM/MIN/MAX total aggregate operations
+    
+    Closes #596
+
+[33mcommit 7259dea4674913fbd9f1eb598578363115dd206d[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Mon Aug 28 15:42:00 2023 +0200
+
+    [DAPHNE-#596] CUDA transpose vector optimization for DenseMatrix
+    
+    This commit reintroduces avoiding to really transpose a vector. This was not possible while we did not handle the meta data object properly. This is now cloned into the result matrix.
+
+[33mcommit fdef49fcd21d97bc40f859c868389ff7a0fc76ab[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Sun Aug 27 14:42:00 2023 +0200
+
+    [DAPHNE-#596] CUDA row aggregation ops
+    
+    Supported ops in this initial version of CUDA row aggregation are SUM and MAX.
+
+[33mcommit 819c2142cc47723f9883a9eafcdcf62dfdfb46d5[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Sat Aug 26 13:42:00 2023 +0200
+
+    [DAPHNE-#596] Elementwise Binary CUDA Ops
+    
+    This commit adds code cleanups and a few elementwise binary operations for CUDA.
+
+[33mcommit aaa4e4485c67069669e626c627b287a2436629a7[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Fri Aug 25 12:42:00 2023 +0200
+
+    [BUGFIX] Segfault due to uninitialized loggers
+    
+    When running DAPHNE compiled in release mode with CUDA support, the loggers crashed in MarkCUDAOpsPass. Initializing now in DaphneIrExecutor constructor.
+
+[33mcommit d9395e8f4ec0321ba64792627910bab71330909e[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Thu Aug 24 17:28:46 2023 +0200
+
+    [DAPHNE-#591] Parser error default ValueType Meta Data Frame
+    
+    The default value type for frames was not parsed correctly by the MetaDataParser. In addition to fixing this, the outdated test case of this functionality is removed and the current meta data parser test updated to include this feature.
+    
+    Closes #591
+
+[33mcommit 5bb73afb7dafc313e3111e8409df79700814f5a8[m
+Author: Marcus Paradies <marcus.paradies@gmail.com>
+Date:   Wed Aug 23 12:14:47 2023 +0000
+
+    Fix erroneous special treatment of default logger
+
+[33mcommit 1da02c8f2e98691ca6ca418d3ed4b672a8e6377e[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Mon Aug 21 16:43:58 2023 +0200
+
+    [DAPHNE-#589] Fixes regarding idxMin()/idxMax() DaphneDSL built-ins.
+    
+    - The idxMin()/idxMax() aggregation functions were not implemented for column-wise aggregation on DenseMatrix.
+      - Now the aggCol-kernel supports the IDXMIN/IDXMAX op codes.
+    - Row-wise aggregation with the idxMin()/idxMax() aggregation functions on DenseMatrix suffered from erroneous casting of the inputs to value type size_t.
+      - This happened since all dimensional aggregation ops (RowAggOp/ColAggOp in DaphneOps.td) had the CastArgsToResType trait, even though this causes wrong behavior for Row/ColAggIdxMin/MaxOp (as mentioned by a todo in AdaptTypesToKernelsPass.cpp).
+      - When the input values could not be distinguished after the cast to size_t (e.g., floating-point numbers with the same digits before the comma), then the result could be wrong.
+      - Now, this trait is not assigned to the superclasses RowAggOp/ColAggOp anymore, but to the concrete subclasses, but not to those concerned with idxMin/idxMax.
+      - The instantiations of these kernels were updated accordingly (we don't need value type size_t to size_t anymore, but various value types to size_t)
+    - Updated the script-level test cases for the idxMin()/idxMax() DaphneDSL built-in functions.
+      - Also test column-wise aggregation.
+      - Added cases with floating-point numbers with the same digits before the comma.
+    - Closes #589.
+
+[33mcommit 6db6d80d3d7a7ecf92e49fa1a3e40dc62066055e[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Tue Jun 27 14:13:00 2023 +0200
+
+    DaphneDSL UDFs with multiple return values.
+    
+    - So far, user-defined functions in DaphneDSL could return either no values or exactly one value.
+    - However, there are situations when it is convenient to return multiple values from a UDF.
+      - These values may even have different data types (e.g., scalar and matrix), such that wrapping them into a matrix or frame is not a general solution.
+    - This commit introduces support for DaphneDSL UDFs with multiple return values.
+    - Adapted the DaphneDSL grammar and parser accordingly.
+    - Added script-level test cases.
+    - Updated the DaphneDSL language reference (documentation).
+
+[33mcommit 939f3c621d2c1674d21a3c21e4deb70aaaa7a2ca[m
+Author: m-birke <wesci@web.de>
+Date:   Tue Aug 8 13:21:36 2023 +0200
+
+    [DOC, DAPHNE-#586] gh action: only deploy on main branch
+    
+    This commit should fix the failing documentation deployment gh action.
+    
+    Closes #586
+
+[33mcommit d43dadd71e5db2e8f6f57ac0125dd44fac749590[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Mon Jul 31 00:17:45 2023 +0200
+
+    [MINOR] Version update; two small improvements
+    
+    This commit contains three small changes before releasing DAPHNE 0.2
+    * Version output updated to 0.2
+    * Change running unminimize in entrypoint-interactive.sh to a printed hint to avoid the annoying interruption when running interactive containers
+    * Revert a change to run-daphne.sh that was only relevant when running in a docker container
+
+[33mcommit fedc4cfaf50f4a2a211b9a25f8390f3be16795b6[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Fri Jul 28 20:39:11 2023 +0200
+
+    [MINOR] Switch back to BASE (not CUDA) container by default.
+
+[33mcommit b707c3d5dbdb55434fba352a62a107f9c6f99818[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Fri Jul 28 20:37:47 2023 +0200
+
+    [MINOR] Indentation fixes.
+
+[33mcommit cd41215a21fb784aec227b73fb77cd6afc29df38[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Jul 26 14:32:26 2023 +0200
+
+    [DOC] Updates to developer documentation concerning logging.
+    
+    This commit adds instructions to avoid spdlog::get() in performance critical sections.
+
+[33mcommit 4d3384e9a5596dea686d040b333061a9fb8b2b63[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Jul 26 01:41:36 2023 +0200
+
+    [DAPHNE-#575] Logger setup for distributed worker
+    
+    This commit sets up the DaphneLogger for the WorkerImplGRPC to make the test cases work.
+    Doing the same for MPI remains for future work (no test cases there yet).
+
+[33mcommit 37c7bcaec285c928fab77cad89c1010baf70709a[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Mon Jul 24 23:41:15 2023 +0200
+
+    [DAPHNE-#575] Improved error logging with default logger; cleanups
+    
+    This commit improves the behavior of the default logger to properly log all errors from the compiler passes and runtime kernels and test cases.
+    An initial effort has been made to have more uniform error messages but this remains work in progress.
+    A few occurrences of std::cout and std::cerr are left for the original authors of that code to decide how to log these outputs.
+    
+    Closes #575
+
+[33mcommit d2c93635ce0e1b45ff7a8ba38cdccc301748ae38[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Mon Jul 24 23:25:08 2023 +0200
+
+    [MINOR] Cleanup rewrite to kernel calls
+    
+    Removed some commented code and reformatted some lines
+
+[33mcommit 6f3fe7e08592f4ed97367ef7b23cc93048f37d3b[m
+Author: mbirke <wesci@web.de>
+Date:   Fri Jul 7 20:15:30 2023 +0200
+
+    [DOC] Fix md flaws and add newely added docs to html page
+    
+    This commit fixes some issues that were introduced in the conflict resolution of a large rebase of 50+ commits (DAPHNE-#550 - c27d7e9a9965ce9736a1299a7962ef163af7973c)
+    
+    Closes #570
+
+[33mcommit 70d2eeea62e8413a06def8873386b644524699f8[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Thu Jul 20 00:04:06 2023 +0200
+
+    [MINOR] Shape inference for eigen op
+    
+    This commit adds dimension information to the eigenvalues and eigenvector outputs of eigen() based on the input.
+
+[33mcommit 7621132d73c5d57e093e46d42cea183549a29299[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Jul 19 15:47:00 2023 +0200
+
+    [BUGFIX] Type cast while parsing transpose crashes on unknown input
+    
+    The builder defined for the transpose operation in DaphneOps.td used a cast to MatrixType. This caused an assertion to fire while running a script (PCA) in DAPHNE debug that used a transpose operation with input from ctable().
+    The cast in the builder definition would generate code that is run while creating the transpose op in the parser stage of the DAPHNE compiler. At this stage the output of ctable() is still unknown because the type inference pass did not run yet.
+    Removing the cast is a viable solution as the subsequent type inference will set the types right when it is time to.
+
+[33mcommit 8599431df2a5713add7e85ed60389bad06ada00e[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Tue Jul 18 17:19:16 2023 +0200
+
+    [DAPHNE-#558] Bugfix regarding DaphneDSL variable scoping.
+    
+    - At the end of parsing DaphneDSL if/for/while statements, writes to variables that existed before the statement were handled incorrectly.
+    - More precisely, there were cases when the updated values were inserted into the wrong scope (namely the scope where the variable was defined).
+    - This resulted in various problems ranging from lost updates on variables to crashes due to the violation of MLIR invariants.
+    - This commit fixes the problem by ensuring that symbol-value-pairs can only be inserted in the current (innermost) scope of the ScopedSymbolTable.
+    - DaphneDSL statements with nested scopes (like if, for, while, blocks) are responsible for correctly inserting symbol-value-pairs into their parent scope.
+    - Added numerous script-level test cases for nested control structures.
+    - Removed the "forward references" (statements like "X = X;") in multiLogReg.daph, such workarounds are not needed anymore.
+    - Closes #558.
+
+[33mcommit 70cdb2123efca728ae89e1c3e2dd987debb71600[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Tue Jul 11 22:16:52 2023 +0200
+
+    [DAPHNE-#579] Minor addendum to PCA script corrections
+    
+    To sort the eigen vectors correctly according to the eigen values, a transpose was missing.
+
+[33mcommit 1609e5b96cc19a12c62e27dfb11e7838d738d5ef[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Tue Jul 11 18:45:27 2023 +0200
+
+    [MINOR] Added a link to the new online docs in README.md.
+
+[33mcommit 6133978d95900cb0fba1b20b01ba43bc7d44811e[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Tue Jul 11 18:40:52 2023 +0200
+
+    [MINOR] Fixes in logging docs.
+    
+    - Referring to numbered bullet points at the second indentation level is fragile, since the numbering is not always the same (e.g., i,ii,iii on GitHub, and a,b,c in our generated HTML docs).
+    - Typos.
+
+[33mcommit d0f4e6d117e2aeb7990631f6de2cc800c1638825[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Tue Jul 11 18:09:11 2023 +0200
+
+    [DAPHNE-573] Corrections in PCA script.
+    
+    - Fixed a few little bugs in the Principle Component Analysis (PCA) DaphneDSL script.
+      - The bugs were most likely due to an incomplete translation from the PCA script of Apache SystemDS.
+      - We could trigger these bugs now, since we can run this script only since recently (since we have the eigen()-kernel).
+    - Now the script runs well and non-vectorized and vectorized execution yield the same results (in a quick manual test).
+    - Updated the README.md overview of the available scripts.
+    - Closes #573.
+
+[33mcommit 5f739733f33dc0f88b4bda9b163b96ef509fc77c[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Mon Jul 10 18:01:57 2023 +0200
+
+    Pass errors are not only logged, but also printed again (#571)
+    
+    - For a long time, pass errors, which happen inside the DAPHNE compiler, used to be printed to std::cerr.
+    - Since a recent commit (4a8f003cf5b499bec4ecbb138441af8dfa2413f0), they are logged using the recently introduced logger, instead.
+    - Not printing the error messages to std::cerr anymore has at least two significant downsides:
+      - Users don't see the error messages anymore. Instead, DaphneDSL scripts may just silently fail.
+      - The error output captured by our script-level test cases is useless, since it is empty.
+    - This commit adds the printing of the error messages to std::cerr again, but also retains the logging of the errors.
+
+[33mcommit 36825c7f7be2613bfbb160f28d1e82a97908cab7[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Mon Jul 10 17:39:40 2023 +0200
+
+    [DAPHNE-#568] Fixed type inference for right indexing.
+    
+    - The DaphneDSL parser inferred the wrong result type for ExtractColOp and SliceColOp, which are used for DaphneDSL right indexing, in certain cases.
+    - This has been fixed by the following:
+      - Improved implementation of type inference for ExtractColOp (covering more cases).
+      - Implementation of type inference for SliceColOp.
+      - DaphneDSL parser calls type inference for these ops, instead of reimplementing it.
+    - Closes #568.
+
+[33mcommit 97934c52772daf6ceaee979fa27f2001c7ae08af[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Mon Jul 10 16:58:16 2023 +0200
+
+    [BUGFIX] Out-of-bounds right indexing in a test case.
+
+[33mcommit e2473f5803fdca429b3848792ea7a9a74764d7eb[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Mon Jul 10 16:55:13 2023 +0200
+
+    [MINOR] Removed unnecessary right indexing in a test case.
+
+[33mcommit 24896d02df04f0e892cad0b6f2a6fb1a6480ee8d[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Thu Jul 6 15:04:13 2023 +0200
+
+    [BUGFIX] Prevent more logger related test case crashing
+    
+    In the case of log calls via spdlog::get("my-logger-name")->debug("my message"); when invoked from run_tests, the program would crash because the loggers were not initialized in the kernel library. Moving DAPHNE context creation to a cpp file fixes this.
+
+[33mcommit 680ba7d13131286d6b07167e04d34f9cec4abfb1[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Thu Jul 6 14:21:44 2023 +0200
+
+    [BUGFIX, DAPHNE-#555] Catching more exceptions in compiler passes
+    
+    This is a follow up fix for [1] to not only handle uncaught exceptions that come in via SIG_ABRT from the kernel libraries, but also from exceptions thrown in the DAPHNE compiler passes. Separate treatment is required here as a few script level test cases expect the DAPHNE executable to return PASS_ERROR if something fails in the compiler passes.
+    
+    [1] commit 4a8f003cf5b499bec4ecbb138441af8dfa2413f0
+
+[33mcommit a9d894986b0250073710f695f78e4cb666f0601e[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Thu Jul 6 08:50:50 2023 +0200
+
+    [MINOR] More 0.2-rc2 improvements
+    
+    * DaphneLIB goes to src/api/python in release artifact
+    * Left a note in dnn-conv2d.daph example script that DNN ops only run on CUDA
+
+[33mcommit bcd790298726c0272da82774e3c6cecad62abcac[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Jul 5 23:47:02 2023 +0200
+
+    [MINOR] Packaging update for 0.2-rc2
+    
+    Adding the new run-python.sh script to the binary release artifacts
+
+[33mcommit d0ab6a6c620c88126ac3804033fd598750c34cf6[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Jul 5 22:11:30 2023 +0200
+
+    [DAPHNE-#565] Indexing test case violating fill assertion
+    
+    * According to the discussion in #565, the assertions in Fill.h are misplaced and therefore removed. This entails fixing the assertions in DenseMatrix and Frame too.
+    * Contains some changes to silence linter warnings
+    
+    Closes #565
+
+[33mcommit 38b062b3d340bf3ff59c711f7477ece26d94457f[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Jul 5 22:07:56 2023 +0200
+
+    [BUGFIX] Testcases crashing due to logger issues
+    
+    Fix numpy matmul tests failing due to logger deletion
+
+[33mcommit 4a8f003cf5b499bec4ecbb138441af8dfa2413f0[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Jul 5 23:40:22 2023 +0200
+
+    [BUGFIX, DAPHNE-#555] Catching SIG_ABRT due to unhandled exceptions
+    
+    On ARM, unhandled exceptions from a library seem to cause an abort(), which is something we can handle by registering a handler for this abort posix signal (SIG_ABRT). By doing so we can at least pass the information that something happened without a major refactoring to introduce return code handling from the kernel libraries.
+    
+    Closes #555
+
+[33mcommit 14ef6952103d120cecde05dc2e4c29614f2dfe65[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Jul 5 12:24:51 2023 +0200
+
+    [MINOR] Silence a warning in MTWrapper
+    
+    * The warning stems from a quick fix that was too quick it seems :-P More specifically, the warning was about using signed and unsigned integers together in the comparison of the for loop condition.
+    
+    * One more minor thing: cleaned up one debug print in that file
+
+[33mcommit 2f0dd55b1f1d3e792dc0ed0d7baee851a29b9a2b[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Tue Jul 4 12:38:06 2023 +0200
+
+    [MINOR] More missing element types for MatrixType::verify()
+    
+    These missing element types were failing a test case on ARM. This probably surfaced because the test cases were run in debug mode - which triggers assert().
+
+[33mcommit 0252d19b942a61f2a6e174321257896ec7668c53[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Jul 5 12:31:11 2023 +0200
+
+    [DOC, DAPHNE-#566] Improvements to quickstart guide.
+    
+    - Added information on DaphneLib.
+    - Clear separation between info on running DaphneDSL and DaphneLib scripts.
+    - Removed some information, which I think is not important for a user wanting to quickstart DAPHNE (e.g., --explain and pointers to development-related info).
+    - Added a run-script for DaphneLib (starting python3), analogous to the existing run-daphne.sh (starting daphne).
+    
+    Closes #566
+    
+    # Conflicts:
+    #       doc/Quickstart.md
+
+[33mcommit c27d7e9a9965ce9736a1299a7962ef163af7973c[m
+Author: m-birke <wesci@web.de>
+Date:   Mon Jun 5 19:24:23 2023 +0200
+
+    [DAPHNE-#550] HTML documentation generated from our markdown files
+    
+    This commit is the squashed version of PR #550. I did not take the time to sum up the individual log messages of the 56 original commits. Find the commit messages of these squashed commit below (in chronological order).
+    
+    Closes #550
+    
+    Co-authored-by: Patrick Damme <patrick.damme@tu-berlin.de>
+    
+    docs mvp with only markdown docs
+    
+    doc readme: fix urls to work on web page
+    
+    add logos
+    
+    fix markdown syntax
+    
+    who is this mark dwon?
+    
+    remove copyright info from mark dwon files
+    
+    shorten mark dwon headers
+    
+    shorten mark dwon headers
+    
+    bundle DaphneDSL docs
+    
+    bundle DaphneLib docs
+    
+    minor md change
+    
+    [doc] fix some links
+    
+    [doc] widen html width
+    
+    add repo infos
+    
+    [mkdocs] manual ordering of documentation
+    
+    use nav tabs
+    
+    [doc][html] set color for light mode to daphne blue
+    
+    [doc][html] set color palette with light and dark version for DAPHNE blue
+    
+    [doc] change doc links back to working on gh
+    
+    [doc] append .md sufix back to doc links
+    
+    [doc] move binary format to dev docs
+    
+    [doc] gh action: exchange urls before doc build
+    
+    [doc] gh action: rm .md suffix for doc build prep
+    
+    [doc] gh actions insert full qualified gh url to all files except for /doc/ paths
+    
+    [doc] doc readme, minro bug fix
+    
+    [doc] fix urls
+    
+    [doc] add doc/development/Contributing.md dummy which will be overridden
+    
+    [doc] bugfix in mkdocs
+    
+    [doc] add dev docs for writing docs
+    
+    [doc] gh actions link replacement fix
+    
+    [doc] gh actions: also make links to file in repo root work
+    
+    [doc] fix links in gettingstarted
+    
+    [doc] rename containers/Readme to README
+    
+    [doc] fix broken links
+    
+    [doc] gh actions: make sed cmds better readable
+    
+    [doc] support links to issues
+    
+    [doc] add favicon
+    
+    [doc] rearrange docs
+    
+    [doc] change header for config
+    
+    [doc] put <> stuff into inline code
+    
+    [doc] indentation fixes
+    
+    [doc] make nav bar sticky
+    
+    [doc] refactor and add new md files to html
+    
+    Minor fixes.
+    
+    [doc] fix angle bracket usage
+    
+    [doc] try different gh workflow
+    
+    [doc] gh worflow yaml
+    
+    [doc] readd license header to all files
+    
+    [doc] change push trigger to main branch
+    
+    [doc] gh workflow: add PR trigger
+    
+    Minor polishing.
+
+[33mcommit 00382c129a9dfdaeafc2aaf78839891c96015939[m
+Author: Stratos Psomadakis <774566+psomas@users.noreply.github.com>
+Date:   Mon Jul 3 17:20:08 2023 +0300
+
+    [DAPHNE-#552] Document the PAPI profling support
+    
+    Closes #552, Closes #561
+
+[33mcommit 505e2a31adfc5428dc318260c29a965e1b9d1576[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Wed Jun 28 16:35:16 2023 +0200
+
+    [BUGFIX] Workaround for get_topology() on ARM
+    
+    Until DAPHNE-#554 is implemented, this serves as a work around to get the vectorized engine running on ARM and to pass test cases.
+
+[33mcommit 9ad5901d52b87032960ff07bc4b8a2e46016e7a7[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Tue Jun 27 20:57:26 2023 +0200
+
+    [MINOR] Fixed SQL example scripts
+    
+    The frame creation in some of the SQL example scripts used the currently unsupported notation frame() instead of createFrame().
+    
+    Co-authored-by: Aleš Zamuda <ales.zamuda@um.si>
+
+[33mcommit 97f1adaf2b9c4da1db63840954143e2b83d53a69[m
+Author: avontz@cslab.ece.ntua.gr <avontz@cslab.ece.ntua.gr>
+Date:   Tue Jun 20 13:41:30 2023 +0300
+
+    [BUGFIX] Fixed a bug with MPI DistributedCollect.h.
+    
+    - DistributedCollect implementation of MPI could lead to undefined
+    behavior in cases where pipeline outputs were more than one. DistributedCollect kernel was
+    listening for responses, resulting in cases where coordinator
+    would receive responses from the same worker, but regarding different pipeline outputs. This has been fixed
+    so that the coordinator requests response from a specific worker at a time, instead of listening
+    for any response available.
+    - Fixed a bug with LoadPartioningDistributed. In addition to correct range we
+    need to also verify that data is actually located at the worker before
+    deciding whether we should re-send it.
+
+[33mcommit 55cfc07d50def90204887a661c968dc840cf7dc8[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Fri Jun 23 20:50:32 2023 +0200
+
+    [DOC] DaphneDSL built-in functions: Complete list with operators.
+    
+    - Some of DAPHNE's elementwise binary operations can be used through operators (e.g., `+`), some through built-in functions (e.g., `log()`), and some through both (e.g., `pow()`/`^`).
+    - This commit completes the list of DaphneDSL built-in functions for elementwise binary operations with those that have infix operators.
+    - That way, readers can get a clearer overview of the available operations when skimming the document.
+
+[33mcommit 4b43d34f74e8fbe7e8450fd096b20459801411f2[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Fri Jun 23 20:16:28 2023 +0200
+
+    OuterBinary: Generalized outer product.
+    
+    - The outer product is a well-known operation in linear algebra.
+    - This commit adds support for a generalized outer product, where any binary function could be used.
+      - DaphneIR operation: OuterBinaryOp, e.g., OuterAddOp, OuterMulOp, ...
+      - kernels: outerBinary (with op code, just like ewBinaryMat)
+      - DaphneDSL built-in functions: e.g., outerAdd(), outerMul(), ...
+    - Unit test cases for the kernels.
+    - Updated list of DaphneDSL built-in functions.
+
+[33mcommit 770f8be250ac81e64b5ca23bad36d7f7cb2d6a1d[m
+Author: Patrick Damme <patrick.damme@tu-berlin.de>
+Date:   Fri Jun 23 20:02:30 2023 +0200
+
+    [MINOR] Renamed helper functions in DaphneDSL parser.
+    
+    - Affects the helper functions for creating elementwise unary/binary operations.
+    - The "elementwise" character does not need to be reflected in the function names, since these helpers could very well be applied to non-elementwise unary/binary operations.
+
+[33mcommit f5c11e165ac3b7942053617171918c1a9d2614f0[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Fri Jun 23 14:41:40 2023 +0200
+
+    [MINOR] The missing run script
+    
+    Apparently, run-daphne.sh did not magically git-add itself :-P
+
+[33mcommit 41b5810c1df5d2dcb46a5b23e63540d5ab93f13d[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Fri Jun 23 12:09:19 2023 +0200
+
+    [MINOR] Packaging improvements for 0.2-rc1
+    
+    * Some glitches with adding files & folders to the package
+    * Updated print out of daphne --version
+    * Minor CMake upgrade in the containers
+
+[33mcommit 32abc09b9ea66555b921af9362970ec43bd8626c[m
+Author: Mark Dokter <mark@dokter.cc>
+Date:   Tue Jun 20 10:10:06 2023 +0200
+
+    [DAPHNE-#352] Integer matrix multiplication
+    
+    This commit adds an integer version of the matrix multiplication op based on the Eigen library.
+    Furthermore, the mat mult op has been refactored to reduce code duplication.
+    
+    Closes #352, Closes #384
+    
+    Co-authored-by: KostasBitsakos <kbitsak@cslab.ece.ntua.gr>
