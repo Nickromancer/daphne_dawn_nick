@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -1517,6 +1517,18 @@ def Daphne_DistributedPipelineOp : Daphne_Op<"distributedPipeline", [AttrSizedOp
             TypedArrayAttrBase<VectorCombineAttr, "Vector-Combines">:$combines
     );
     let results = (outs Variadic<MatrixOrFrame>:$outputs);
+}
+
+//add new DaphneIR (MLIR) operation
+// TODO: the op should get the information for which function registered in computational storage
+// TODO: it should execute (could be just an integer code or string name, to begin with)
+def CompStorageOp : Daphne_Op<"CompStorage", [AttrSizedOperandSegments]> {
+	let summary = "...";
+
+	let arguments = (ins Variadic<AnyTypeOf<[AnyScalar, MatrixOrFrame, Unknown]>>:$inputs,
+	Variadic<AnyTypeOf<[SIntScalar, size, Unknown]>>:$out_rows,
+	Variadic<AnyTypeOf<[SIntScalar, size, Unkniwn]>>:$out_cols,
+	            
 }
 
 // ****************************************************************************
