@@ -1526,10 +1526,15 @@ def Daphne_DistributedPipelineOp : Daphne_Op<"distributedPipeline", [AttrSizedOp
 def CompStorageOp : Daphne_Op<"CompStorage", [AttrSizedOperandSegments]> {
 	let summary = "...";
 
-	let arguments = (ins Variadic<AnyTypeOf<[AnyScalar, MatrixOrFrame, Unknown]>>:$inputs,
+	let arguments = (ins
+	StrScalar:$op, 
+	Variadic<AnyTypeOf<[AnyScalar, MatrixOrFrame, Unknown]>>:$inputs,
 	Variadic<AnyTypeOf<[SIntScalar, size, Unknown]>>:$out_rows,
-	Variadic<AnyTypeOf<[SIntScalar, size, Unkniwn]>>:$out_cols,
-	            
+	Variadic<AnyTypeOf<[SIntScalar, size, Unknown]>>:$out_cols,
+	TypedArrayAttrBase<VectorSplitAttr, "Vector-Splits">:$splits,
+        TypedArrayAttrBase<VectorCombineAttr, "Vector-Combines">:$combines	            
+    );
+    let results = (outs Variadic<MatrixOrFrame>:$outputs);
 }
 
 // ****************************************************************************
