@@ -324,6 +324,10 @@ int startDAPHNE(int argc, const char** argv, DaphneLibResult* daphneLibRes, int 
             "enable-profiling", cat(daphneOptions),
             desc("Enable profiling support")
     );
+    static opt<bool> enableHelloWorld (
+            "enable-helloWorld", cat(daphneOptions),
+	    desc("Enable Hello World!")
+    );
     static opt<bool> timing (
             "timing", cat(daphneOptions),
             desc("Enable timing of high-level steps (start-up, parsing, compilation, execution) and print the times to stderr in JSON format")
@@ -488,6 +492,10 @@ int startDAPHNE(int argc, const char** argv, DaphneLibResult* daphneLibRes, int 
 
     if(enableProfiling) {
         user_config.enable_profiling = true;
+    }
+
+    if(enableHelloWorld) {
+	user_config.enable_helloWorld = true;
     }
 
     // add this after the cli args loop to work around args order

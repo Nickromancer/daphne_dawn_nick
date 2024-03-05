@@ -1519,6 +1519,12 @@ def Daphne_DistributedPipelineOp : Daphne_Op<"distributedPipeline", [AttrSizedOp
     let results = (outs Variadic<MatrixOrFrame>:$outputs);
 }
 
+def Daphne_HelloWorldOp : Daphne_Op<"helloWorld"> {
+    let summary = "Writes out Hello World!";
+
+    let results = (outs StrScalar:$outputs);
+}
+
 // ****************************************************************************
 // Higher-order operations
 // ****************************************************************************
