@@ -2,6 +2,8 @@
 #include <ir/daphneir/Passes.h>
 
 #include <mlir/Pass/Pass.h>
+#include <iostream>
+
 
 using namespace mlir;
 

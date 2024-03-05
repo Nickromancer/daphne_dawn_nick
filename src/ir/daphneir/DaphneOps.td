@@ -1520,9 +1520,8 @@ def Daphne_DistributedPipelineOp : Daphne_Op<"distributedPipeline", [AttrSizedOp
 }
 
 def Daphne_HelloWorldOp : Daphne_Op<"helloWorld"> {
+    //HelloWorld should probably not produce any results. It should maybe be marked [Pure] in DaphneOp<>
     let summary = "Writes out Hello World!";
-
-    let results = (outs StrScalar:$outputs);
 }
 
 // ****************************************************************************
