@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-template<typename VT>
+template<>
 void printHelloWorld() {
     std::cout << "Hello World";
 }

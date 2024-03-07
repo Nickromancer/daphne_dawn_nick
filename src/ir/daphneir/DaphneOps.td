@@ -1521,7 +1521,7 @@ def Daphne_DistributedPipelineOp : Daphne_Op<"distributedPipeline", [AttrSizedOp
 
 def Daphne_HelloWorldOp : Daphne_Op<"helloWorld"> {
     let summary = "Writes out Hello World!";
-    let results = (outs StrScalar:$outputs);
+    let results = (outs); // no results
 }
 
 // ****************************************************************************
