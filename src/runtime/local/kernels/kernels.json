@@ -1248,8 +1248,12 @@
         "kernelTemplate": {
             "header": "HelloWorld.h",
             "opName": "helloWorld",
-            "returnType": "VT",
-        },
+            "returnType": "void",
+	    "templateParams": [],
+	    "runtimeParams": []
+	},
+	    "instantiations": [],
+	    "opCodes": []
     },
     {
         "kernelTemplate": {
