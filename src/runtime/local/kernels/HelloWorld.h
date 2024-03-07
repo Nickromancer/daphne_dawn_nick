@@ -7,7 +7,7 @@
 
 template<typename VT>
 void printHelloWorld() {
-	os << "Hello World";
+    std::cout << "Hello World";
 }
 
 
