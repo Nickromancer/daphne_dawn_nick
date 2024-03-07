@@ -1246,6 +1246,13 @@
     },
     {
         "kernelTemplate": {
+            "header": "HelloWorld.h",
+            "opName": "helloWorld",
+            "returnType": "VT",
+        },
+    },
+    {
+        "kernelTemplate": {
             "header": "OuterBinary.h",
             "opName": "outerBinary",
             "returnType": "void",
