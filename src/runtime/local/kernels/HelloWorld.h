@@ -5,8 +5,7 @@
 
 #include <iostream>
 
-template<>
-void printHelloWorld() {
+void helloWorld(DCTX(ctx)) {
     std::cout << "Hello World";
 }
 

@@ -1218,7 +1218,7 @@ antlrcpp::Any DaphneDSLBuiltins::build(mlir::Location loc, const std::string & f
     // ********************************************************************
 
     if(func == "helloWorld") {
-    return builder.create<helloWorldOp>();
+    return builder.create<HelloWorldOp>(loc);
     }
 
     throw std::runtime_error("unknown built-in function: '" + func + "'");

@@ -1252,8 +1252,7 @@
 	    "templateParams": [],
 	    "runtimeParams": []
 	},
-	    "instantiations": [],
-	    "opCodes": []
+	    "instantiations": [[]]
     },
     {
         "kernelTemplate": {
