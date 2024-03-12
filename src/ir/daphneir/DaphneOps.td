@@ -1524,6 +1524,11 @@ def Daphne_HelloWorldOp : Daphne_Op<"helloWorld"> {
     let results = (outs); // no results
 }
 
+def Daphne_AddTwoOp : Daphne_Op<"addTwo"> {
+    let summary = "Takes two numbers and returns the result";
+    // TODO: Add Variadic Output
+}
+
 // ****************************************************************************
 // Higher-order operations
 // ****************************************************************************
