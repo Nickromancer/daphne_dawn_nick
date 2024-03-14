@@ -1256,6 +1256,42 @@
     },
     {
         "kernelTemplate": {
+            "header": "AddTwo.h",
+            "opName": "addTwo",
+            "returnType": "TRes",
+            "templateParams": [
+                {
+                    "name": "TRes",
+                    "isDataType": false
+                },
+                {
+                    "name": "TLhs",
+                    "isDataType": false
+                },
+                {
+                    "name": "TRhs",
+                    "isDataType": false
+                }
+            ],	    "runtimeParams": [                {
+                "type": "TLhs",
+                "name": "lhs"
+            },
+            {
+                "type": "TRhs",
+                "name": "rhs"
+            }]
+	},
+    "instantiations": [
+        ["double", "double", "double"],
+        ["float", "float", "float"],
+        ["int64_t", "int64_t", "int64_t"],
+        ["uint64_t", "uint64_t", "uint64_t"],
+        ["uint32_t", "uint32_t", "uint32_t"],
+        ["size_t", "size_t", "size_t"]
+    ] 
+    },
+    {
+        "kernelTemplate": {
             "header": "OuterBinary.h",
             "opName": "outerBinary",
             "returnType": "void",

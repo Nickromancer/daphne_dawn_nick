@@ -1524,9 +1524,15 @@ def Daphne_HelloWorldOp : Daphne_Op<"helloWorld"> {
     let results = (outs); // no results
 }
 
-def Daphne_AddTwoOp : Daphne_Op<"addTwo"> {
+def Daphne_AddTwoOp : Daphne_Op<"addTwo", [AttrSizedOperandSegments]> {
     let summary = "Takes two numbers and returns the result";
     // TODO: Add Variadic Output
+    let arguments = (ins
+    Variadic<AnyTypeOf<[SIntScalar, Size]>>:$lhs,
+    Variadic<AnyTypeOf<[SIntScalar, Size]>>:$rhs
+    );
+
+    let results = (outs AnyTypeOf<[SIntScalar, Size]>:$outputs); 
 }
 
 // ****************************************************************************
