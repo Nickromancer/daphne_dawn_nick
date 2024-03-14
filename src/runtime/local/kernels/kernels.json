@@ -1272,7 +1272,9 @@
                     "name": "TRhs",
                     "isDataType": false
                 }
-            ],	    "runtimeParams": [                {
+            ],	    
+            "runtimeParams": [
+            {
                 "type": "TLhs",
                 "name": "lhs"
             },

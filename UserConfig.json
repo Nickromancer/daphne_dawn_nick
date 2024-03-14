@@ -1,7 +1,6 @@
 {
     "use_cuda": false,
     "use_vectorized_exec": false,
-    "use_hello": false,
     "use_obj_ref_mgnt": true,
     "cuda_fuse_any": false,
     "use_mlir_codegen": false,

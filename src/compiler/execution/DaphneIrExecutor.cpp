@@ -159,9 +159,10 @@ bool DaphneIrExecutor::runPasses(mlir::ModuleOp module) {
         //pm.addPass(mlir::daphne::createPrintIRPass("IR after distribution - WhileLICM"));
     }
 #endif
-    //TODO I havo no idea how this works. Figure it out.
     if (userConfig_.enable_helloWorld)
 	pm.addPass(mlir::daphne::createHelloWorldPass());
+    if (userConfig_.enable_addTwo)
+	pm.addPass(mlir::daphne::createAddTwoPass());
     // For now, in order to use the distributed runtime we also require the
     // vectorized engine to be enabled to create pipelines. Therefore, *if*
     // distributed runtime is enabled, we need to make a vectorization pass.

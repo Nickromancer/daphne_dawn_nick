@@ -5,8 +5,8 @@
 
 #include <iostream>
 
-void helloWorld(DCTX(ctx)) {
-    std::cout << "Hello World";
+inline void helloWorld(DCTX(ctx)) {
+    std::cout << "Hello World\n";
 }
 
 

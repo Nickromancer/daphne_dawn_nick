@@ -5,8 +5,7 @@
 
 #include <iostream>
 
-template<class TRes, class TLhs, class TRhs>
-TRes addTwo(TRes *& res, const TLhs * lhs, const TRhs * rhs, DCTX(ctx)) {
-        TRes result = lhs + rhs;
-        return static_cast<bool>(result);
+template<class VTRes, class VTLhs, class VTRhs>
+VTRes addTwo(VTLhs lhs, VTRhs rhs, DCTX(ctx)) {
+        return lhs + rhs;
 }

@@ -34,6 +34,7 @@ add_mlir_dialect_library(MLIRDaphneTransforms
     MatMulOpLowering.cpp
     AggAllOpLowering.cpp
     HelloWorldPass.cpp
+    AddTwoPass.cpp
 
     DEPENDS
     MLIRDaphneOpsIncGen

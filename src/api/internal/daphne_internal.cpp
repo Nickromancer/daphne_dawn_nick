@@ -328,6 +328,10 @@ int startDAPHNE(int argc, const char** argv, DaphneLibResult* daphneLibRes, int 
             "enable-helloWorld", cat(daphneOptions),
 	    desc("Enable Hello World!")
     );
+    static opt<bool> enableAddTwo (
+            "enable-addTwo", cat(daphneOptions),
+	    desc("Enable AddTwo")
+    );
     static opt<bool> timing (
             "timing", cat(daphneOptions),
             desc("Enable timing of high-level steps (start-up, parsing, compilation, execution) and print the times to stderr in JSON format")
@@ -496,6 +500,10 @@ int startDAPHNE(int argc, const char** argv, DaphneLibResult* daphneLibRes, int 
 
     if(enableHelloWorld) {
 	user_config.enable_helloWorld = true;
+    }
+
+    if(enableAddTwo) {
+	user_config.enable_addTwo = true;
     }
 
     // add this after the cli args loop to work around args order
