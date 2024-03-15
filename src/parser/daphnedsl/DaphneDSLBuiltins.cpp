@@ -1222,18 +1222,13 @@ antlrcpp::Any DaphneDSLBuiltins::build(mlir::Location loc, const std::string & f
     return builder.create<HelloWorldOp>(loc);
     }
 
-    throw std::runtime_error("unknown built-in function: '" + func + "'");
-
     // ********************************************************************
     // AddTwo function
     // ********************************************************************
 
     if(func == "addTwo") {
-        checkNumArgsExact(func, numArgs, 2);
-        mlir::Value lhs = args[0];
-        mlir::Value rhs = args[1];
-
-    return builder.create<AddTwoOp>(loc, utils.sizeType, lhs, rhs);
+        checkNumArgsExact(func, args.size(), 2);
+    return builder.create<AddTwoOp>(loc, args[0].getType(), args[0], args[1]);
     }
 
     throw std::runtime_error("unknown built-in function: '" + func + "'");

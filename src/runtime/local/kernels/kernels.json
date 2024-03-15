@@ -1258,28 +1258,32 @@
         "kernelTemplate": {
             "header": "AddTwo.h",
             "opName": "addTwo",
-            "returnType": "TRes",
+            "returnType": "void",
             "templateParams": [
                 {
-                    "name": "TRes",
+                    "name": "VTRes",
                     "isDataType": false
                 },
                 {
-                    "name": "TLhs",
+                    "name": "VTLhs",
                     "isDataType": false
                 },
                 {
-                    "name": "TRhs",
+                    "name": "VTRhs",
                     "isDataType": false
                 }
             ],	    
             "runtimeParams": [
             {
-                "type": "TLhs",
+                "type": "VTRes *&",
+                "name": "res"
+            },
+            {
+                "type": "VTLhs *",
                 "name": "lhs"
             },
             {
-                "type": "TRhs",
+                "type": "VTRhs *",
                 "name": "rhs"
             }]
 	},

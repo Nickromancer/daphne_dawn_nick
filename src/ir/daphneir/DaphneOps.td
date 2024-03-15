@@ -1524,15 +1524,23 @@ def Daphne_HelloWorldOp : Daphne_Op<"helloWorld"> {
     let results = (outs); // no results
 }
 
-def Daphne_AddTwoOp : Daphne_Op<"addTwo", [AttrSizedOperandSegments]> {
+def Daphne_AddTwoOp : Daphne_Op<"addTwo"> {
     let summary = "Takes two numbers and returns the result";
     
     let arguments = (ins
-    Variadic<AnyTypeOf<[SIntScalar]>>:$lhs,
-    Variadic<AnyTypeOf<[SIntScalar]>>:$rhs
+    AnyTypeOf<[SIntScalar]>:$lhs,
+    AnyTypeOf<[SIntScalar]>:$rhs
     );
 
-    let results = (outs AnyTypeOf<[SIntScalar, Size]>:$res); 
+    let results = (outs AnyTypeOf<[SIntScalar]>:$res); 
+
+        let builders = [
+        OpBuilder<(ins "Value":$lhs, "Value":$rhs), [{
+            // TODO This is wrong if lhs is a scalar and rhs is a matrix.
+            $_state.addTypes(lhs.getType());
+            $_state.addOperands({lhs, rhs});
+        }]>
+    ];
 }
 
 // ****************************************************************************
