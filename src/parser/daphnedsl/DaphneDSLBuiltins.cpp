@@ -15,7 +15,9 @@
  */
 
 #include <compiler/utils/CompilerUtils.h>
+#include <iostream>
 #include <ir/daphneir/Daphne.h>
+#include <llvm/ADT/StringExtras.h>
 #include <mlir/IR/Value.h>
 #include <parser/daphnedsl/DaphneDSLBuiltins.h>
 #include <runtime/local/datastructures/Frame.h>
@@ -1228,7 +1230,10 @@ antlrcpp::Any DaphneDSLBuiltins::build(mlir::Location loc, const std::string & f
 
     if(func == "addTwo") {
         checkNumArgsExact(func, args.size(), 2);
-    return builder.create<AddTwoOp>(loc, args[0].getType(), args[0], args[1]);
+    mlir::Value lhs = args[0];
+    mlir::Value rhs = args[1];
+    std::cout << "Hello!\n";
+    return static_cast<mlir::Value>(builder.create<AddTwoOp>(loc, lhs, rhs));
     }
 
     throw std::runtime_error("unknown built-in function: '" + func + "'");

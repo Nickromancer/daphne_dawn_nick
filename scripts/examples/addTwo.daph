@@ -1,1 +1,7 @@
-print(addTwo(2,2));
+x = 2;
+y = 3;
+print(x);
+print(y);
+print("This equals");
+z = addTwo(x,y);
+print(z);

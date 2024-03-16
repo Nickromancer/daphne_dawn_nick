@@ -1528,11 +1528,11 @@ def Daphne_AddTwoOp : Daphne_Op<"addTwo"> {
     let summary = "Takes two numbers and returns the result";
     
     let arguments = (ins
-    AnyTypeOf<[SIntScalar]>:$lhs,
-    AnyTypeOf<[SIntScalar]>:$rhs
+    AnyTypeOf<[NumScalar]>:$lhs,
+    AnyTypeOf<[NumScalar]>:$rhs
     );
 
-    let results = (outs AnyTypeOf<[SIntScalar]>:$res); 
+    let results = (outs AnyTypeOf<[NumScalar]>:$res); 
 
         let builders = [
         OpBuilder<(ins "Value":$lhs, "Value":$rhs), [{
