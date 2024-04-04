@@ -446,6 +446,7 @@ par_acceptAll="0"
 unknown_options=""
 BUILD_CUDA="-DUSE_CUDA=OFF"
 BUILD_FPGAOPENCL="-DUSE_FPGAOPENCL=OFF"
+BUILD_DELILAH="-DUSE_DELILAH=OFF"
 BUILD_DEBUG="-DCMAKE_BUILD_TYPE=Release"
 BUILD_MPI="-DUSE_MPI=OFF"
 WITH_DEPS=1
@@ -491,6 +492,10 @@ while [[ $# -gt 0 ]]; do
     --fpgaopencl)
         echo using FPGAOPENCL
         export BUILD_FPGAOPENCL="-DUSE_FPGAOPENCL=ON"
+        ;;
+    --delilah)
+        echo using DELILAH
+        export BUILD_DELILAH="-DUSE_DELILAH=ON"
         ;;
     --mpi)
         echo using MPI
