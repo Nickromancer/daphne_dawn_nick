@@ -158,6 +158,11 @@ if(USE_FPGAOPENCL)
 	message(STATUS "cmake: using FPGA")
 	add_definitions(-DUSE_FPGAOPENCL)
 endif()
+option(USE_DELILAH "Whether to activate compilation of Delilah features" OFF)
+if(USE_DELILAH)
+	message(STATUS "cmake: using Delilah")
+	add_definitions(-DUSE_DELILAH)
+endif()
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
