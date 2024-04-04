@@ -37,6 +37,7 @@ struct DaphneUserConfig {
     // Remember to update UserConfig.json accordingly!
 
     bool use_cuda = false;
+    bool use_delilah = false;
     bool use_vectorized_exec = false;
     bool use_distributed = false;
     bool use_hello = false;
@@ -93,6 +94,9 @@ struct DaphneUserConfig {
 #endif
 #ifdef USE_FPGAOPENCL
     std::vector<int> fpga_devices;
+#endif
+#ifdef USE_DELILAH
+    std::vector<int> delilah_devices;
 #endif
     
     

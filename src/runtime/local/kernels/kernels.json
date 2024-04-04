@@ -799,6 +799,21 @@
     },
     {
         "kernelTemplate": {
+            "header": "CreateDelilahContext.h",
+            "opName": "createDelilahContext",
+            "returnType": "void",
+            "templateParams": [],
+            "runtimeParams": []
+        },
+        "api": [
+            {
+                "name":  ["DELILAH"],
+                "instantiations": [[]]
+
+            }]
+    },
+    {
+        "kernelTemplate": {
             "header": "CreateDistributedContext.h",
             "opName": "createDistributedContext",
             "returnType": "void",

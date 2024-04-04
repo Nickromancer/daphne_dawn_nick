@@ -6,7 +6,6 @@
 
 class DelilahContext : public IContext {
     int device_id = -1;
-    size_t mem_budget = 0;
 
     explicit DelilahContext(int id) : device_id(id) {
 	 

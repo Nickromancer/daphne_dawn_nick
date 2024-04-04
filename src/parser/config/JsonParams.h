@@ -26,6 +26,7 @@
  */
 struct DaphneConfigJsonParams {
     inline static const std::string USE_CUDA_ = "use_cuda";
+    inline static const std::string USE_DELILAH_ = "use_delilah";
     inline static const std::string USE_VECTORIZED_EXEC = "use_vectorized_exec";
     inline static const std::string USE_HELLO = "use_hello";
     inline static const std::string USE_ADDTWO = "use_addTwo";
@@ -60,6 +61,7 @@ struct DaphneConfigJsonParams {
 
     inline static const std::string JSON_PARAMS[] = {
             USE_CUDA_,
+            USE_DELILAH_,
             USE_VECTORIZED_EXEC,
 	        USE_HELLO,
             USE_ADDTWO,

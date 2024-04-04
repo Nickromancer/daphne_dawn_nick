@@ -256,6 +256,10 @@ int startDAPHNE(int argc, const char** argv, DaphneLibResult* daphneLibRes, int 
             "fpgaopencl", cat(daphneOptions),
             desc("Use FPGAOPENCL")
     );
+    static opt<bool> delilah(
+            "delilah", cat(daphneOptions),
+            desc("Use DELILAH")
+    );
     static opt<string> libDir(
             "libdir", cat(daphneOptions),
             desc("The directory containing kernel libraries")
@@ -492,6 +496,10 @@ int startDAPHNE(int argc, const char** argv, DaphneLibResult* daphneLibRes, int 
 
     if(fpgaopencl) {
         user_config.use_fpgaopencl = true;
+    }
+
+    if(delilah) {
+        user_config.use_delilah = true;
     }
 
     if(enableProfiling) {

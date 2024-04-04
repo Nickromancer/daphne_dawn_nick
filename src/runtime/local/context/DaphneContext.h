@@ -28,6 +28,10 @@
     #include "FPGAContext.h"
 #endif
 
+#ifdef USE_DELILAH
+    #include "DelilahContext.h"
+#endif
+
 
 
 
@@ -55,6 +59,7 @@ struct DaphneContext {
 
     std::vector<std::unique_ptr<IContext>> cuda_contexts;
     std::vector<std::unique_ptr<IContext>> fpga_contexts;
+    std::vector<std::unique_ptr<IContext>> delilah_contexts;
 
 
     std::unique_ptr<IContext> distributed_context;
@@ -81,8 +86,12 @@ struct DaphneContext {
         for (auto& ctx : fpga_contexts) {
             ctx->destroy();
         }
+        for (auto& ctx : delilah_contexts) {
+            ctx->destroy();
+        }
         cuda_contexts.clear();
         fpga_contexts.clear();
+        delilah_contexts.clear();
 
 
     }
@@ -100,12 +109,18 @@ struct DaphneContext {
        return dynamic_cast<FPGAContext*>(fpga_contexts[dev_id].get());
     }
 #endif
+#ifdef USE_DELILAH
+    [[nodiscard]] DelilahContext* getDelilahContext(int dev_id) const {
+       return dynamic_cast<DelilahContext*>(Delilah_contexts[dev_id].get());
+    }
+#endif
  
 
 
 
     [[nodiscard]] bool useCUDA() const { return !cuda_contexts.empty(); }
     [[nodiscard]] bool useFPGA() const { return !fpga_contexts.empty(); }
+    [[nodiscard]] bool useDELILAH() const { return !delilah_contexts.empty(); }
 
     [[nodiscard]] IContext *getDistributedContext() const {
         return distributed_context.get();
