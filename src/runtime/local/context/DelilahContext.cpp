@@ -2,7 +2,12 @@
 #include <spdlog/spdlog.h>
 #include <stdio.h>
 
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
+#define BUF_SIZE 1024 * 1024
 
 using namespace std;
 
@@ -19,6 +24,7 @@ void DelilahContext::init()
         return 3;
     }
     //TODO: Add rest of init
+
 }
 std::unique_ptr<IContext> DelilahContext::createDelilahContext(int device_id) 
 {
