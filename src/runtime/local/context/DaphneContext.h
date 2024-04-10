@@ -110,7 +110,7 @@ struct DaphneContext {
     }
 #endif
 #ifdef USE_DELILAH
-    [[nodiscard]] DelilahContext* getDelilahContext(int dev_id) const {
+    [[nodiscard]] DelilahContext* getDELILAHContext(int dev_id) const {
        return dynamic_cast<DelilahContext*>(Delilah_contexts[dev_id].get());
     }
 #endif

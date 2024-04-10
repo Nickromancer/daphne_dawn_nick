@@ -23,12 +23,10 @@ void DelilahContext::init()
         perror("Cannot open Delilah device");
         return 3;
     }
-    //TODO: Add rest of init
-
 }
 std::unique_ptr<IContext> DelilahContext::createDelilahContext(int device_id) 
 {
-    auto ctx = std::unique_ptr<DelilahContext>(new DelilahContext(dev_id));
+    DelilahContext* ctx = std::unique_ptr<DelilahContext>(new DelilahContext(dev_id));
     ctx->init();
 
     return ctx;

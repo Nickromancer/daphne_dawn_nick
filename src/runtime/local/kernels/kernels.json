@@ -799,8 +799,8 @@
     },
     {
         "kernelTemplate": {
-            "header": "CreateDelilahContext.h",
-            "opName": "createDelilahContext",
+            "header": "CreateDELILAHContext.h",
+            "opName": "createDELILAHContext",
             "returnType": "void",
             "templateParams": [],
             "runtimeParams": []
@@ -822,6 +822,21 @@
         },
         "instantiations": [
             []
+        ]
+    },
+    {
+        "kernelTemplate": {
+            "header": "Delilah_init.h",
+            "opName": "delilah_init",
+            "returnType": "void",
+            "templateParams": [],
+            "runtimeParams": []
+        },
+        "api": [
+            {
+                "name":  ["DELILAH", "CPP"],
+                "instantiations": []
+            }
         ]
     },
     {

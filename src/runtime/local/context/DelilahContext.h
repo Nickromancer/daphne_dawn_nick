@@ -3,6 +3,11 @@
 #include <cassert>
 #include <iostream>
 #include <memory>
+#include <liburing.h>
+#include <string>
+
+using std::string;
+
 
 class DelilahContext : public IContext {
     int device_id = -1;
@@ -11,12 +16,16 @@ class DelilahContext : public IContext {
 	 
 	}
 public:
-    io_uring = NULL;
-    path = "/dev/delilah0";
-    fd = -1;
+    struct io_uring ring;
+    struct io_uring_sqe* sqe;
+    struct io_uring_cqe* cqe;
+    struct io_uring_params p = {};
+    string path = "/dev/delilah0";
+    int fd = -1;
+    int ret = -1;
 
     static std::unique_ptr<IContext> createDelilahContext(int id);
 
 private:
     void init();
-}
+};
