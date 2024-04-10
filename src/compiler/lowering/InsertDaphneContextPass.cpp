@@ -68,6 +68,11 @@ void InsertDaphneContextPass::runOnOperation()
         builder.create<daphne::CreateFPGAContextOp>(loc);
     }
 #endif
+#ifdef USE_DELILAH
+    if(user_config.use_fpgaopencl) {
+        builder.create<daphne::CreateDelilahContextOp>(loc);
+    }
+#endif
 
  
     // Insert a DestroyDaphneContextOp as the last operation in the block, but

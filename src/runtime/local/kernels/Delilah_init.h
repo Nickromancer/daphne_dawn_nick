@@ -15,11 +15,11 @@ int delilahInit(DCTX(ctx))
     // struct io_uring_sqe* sqe;
     // struct io_uring_cqe* cqe;
     // struct io_uring_params p = {};
-    // int ret, fs
+    // int ret, fd
 
     int ret, fd;
 
-    auto DelilahContext = ctx->getDELILAHContext(0);  
+    auto DelilahContext = ctx->getDelilahContext(0);  
     fd = DelilahContext->fd;
 
     //----------------------------------------------

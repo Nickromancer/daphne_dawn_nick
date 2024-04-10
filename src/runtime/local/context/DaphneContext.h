@@ -110,7 +110,7 @@ struct DaphneContext {
     }
 #endif
 #ifdef USE_DELILAH
-    [[nodiscard]] DelilahContext* getDELILAHContext(int dev_id) const {
+    [[nodiscard]] DelilahContext* getDelilahContext(int dev_id) const {
        return dynamic_cast<DelilahContext*>(Delilah_contexts[dev_id].get());
     }
 #endif
@@ -120,7 +120,7 @@ struct DaphneContext {
 
     [[nodiscard]] bool useCUDA() const { return !cuda_contexts.empty(); }
     [[nodiscard]] bool useFPGA() const { return !fpga_contexts.empty(); }
-    [[nodiscard]] bool useDELILAH() const { return !delilah_contexts.empty(); }
+    [[nodiscard]] bool useDelilah() const { return !delilah_contexts.empty(); }
 
     [[nodiscard]] IContext *getDistributedContext() const {
         return distributed_context.get();

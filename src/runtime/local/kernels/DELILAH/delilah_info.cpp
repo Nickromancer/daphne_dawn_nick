@@ -13,8 +13,6 @@ struct delilah_device
 
 int delilahInfo(DCTX(ctx)) 
 {
-    //delilahInit(ctx);
-
     struct delilah_device *info = malloc(sizeof(struct delilah_device));
 
 
@@ -43,7 +41,4 @@ int delilahInfo(DCTX(ctx))
     printf("Delilah device has %i engines\n", info->eheng);
     printf("Delilah device has %i program slots of size %llu\n", info->ehpslot, info->ehpssze);
     printf("Delilah device has %i data slots of size %llu\n", info->ehdslot, info->ehdssze);
-
-
-    //destroy_kernel(*ctx->ring, ctx->fd, *ctx->src, *ctx->dst, *ctx->prog)
 }
