@@ -101,7 +101,8 @@ if(USE_MPI)
     include_directories(${MPI_INCLUDE_PATH})
 endif()    
 ##########
-
+option(USE_DELILAH "Active Delilah" OFF)
+add_definitions(-DUSE_DELILAH)
 option(USE_CUDA "Whether to activate compilation of CUDA features" OFF)
 include(CheckLanguage)
 check_language(CUDA)
@@ -162,6 +163,7 @@ option(USE_DELILAH "Whether to activate compilation of Delilah features" OFF)
 if(USE_DELILAH)
 	message(STATUS "cmake: using Delilah")
 	add_definitions(-DUSE_DELILAH)
+	find_package(liburing REQUIRED)
 endif()
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
