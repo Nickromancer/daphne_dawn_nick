@@ -841,6 +841,21 @@
     },
     {
         "kernelTemplate": {
+            "header": "Delilah_destroy.h",
+            "opName": "delilahDestroy",
+            "returnType": "void",
+            "templateParams": [],
+            "runtimeParams": []
+        },
+        "api": [
+            {
+                "name":  ["DELILAH", "CPP"],
+                "instantiations": []
+            }
+        ]
+    },
+    {
+        "kernelTemplate": {
             "header": "ConvertMemRefToDenseMatrix.h",
             "opName": "convertMemRefToDenseMatrix",
             "returnType": "void",

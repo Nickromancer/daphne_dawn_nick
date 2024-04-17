@@ -1236,5 +1236,21 @@ antlrcpp::Any DaphneDSLBuiltins::build(mlir::Location loc, const std::string & f
     return static_cast<mlir::Value>(builder.create<AddTwoOp>(loc, lhs, rhs));
     }
 
+    // ********************************************************************
+    // delilah_init function
+    // ********************************************************************
+
+    if(func == "delilahInit") {
+    return builder.create<DelilahInitOp>(loc);
+    }
+    
+    // ********************************************************************
+    // delilah_destroy function
+    // ********************************************************************
+
+    if(func == "delilahDestroy") {
+    return builder.create<DelilahDestroyOp>(loc);
+    }
+
     throw std::runtime_error("unknown built-in function: '" + func + "'");
 }

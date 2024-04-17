@@ -5,8 +5,7 @@
 #include <runtime/local/context/DelilahContext.h>
 #include <ir/daphneir/Daphne.h>
 #include <liburing.h>
-
-
+#include <iostream>
 
 int delilahInit(DCTX(ctx)) 
 {
@@ -18,7 +17,7 @@ int delilahInit(DCTX(ctx))
     // int ret, fd
 
     int ret, fd;
-
+    std::cout << "Creating init";
     auto DelilahContext = ctx->getDelilahContext(0);  
     fd = DelilahContext->fd;
 

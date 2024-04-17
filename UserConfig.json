@@ -1,6 +1,7 @@
 {
     "use_cuda": false,
     "use_delilah": true,
+    "use_delilahInit": true,
     "use_vectorized_exec": false,
     "use_obj_ref_mgnt": true,
     "cuda_fuse_any": false,

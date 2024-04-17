@@ -29,6 +29,7 @@ struct DaphneConfigJsonParams {
     inline static const std::string USE_DELILAH_ = "use_delilah";
     inline static const std::string USE_VECTORIZED_EXEC = "use_vectorized_exec";
     inline static const std::string USE_HELLO = "use_hello";
+    inline static const std::string ENABLE_DELILAHINIT = "enable_delilahInit";
     inline static const std::string USE_ADDTWO = "use_addTwo";
     inline static const std::string USE_OBJ_REF_MGNT = "use_obj_ref_mgnt";
     inline static const std::string USE_IPA_CONST_PROPA = "use_ipa_const_propa";
@@ -64,6 +65,7 @@ struct DaphneConfigJsonParams {
             USE_DELILAH_,
             USE_VECTORIZED_EXEC,
 	        USE_HELLO,
+	        ENABLE_DELILAHINIT,
             USE_ADDTWO,
             USE_OBJ_REF_MGNT,
             USE_IPA_CONST_PROPA,

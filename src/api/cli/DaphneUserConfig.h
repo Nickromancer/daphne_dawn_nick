@@ -55,6 +55,7 @@ struct DaphneUserConfig {
     bool use_fpgaopencl = false;
     bool enable_profiling = false;
     bool enable_helloWorld = false;
+    bool enable_delilahInit = false;
     bool enable_addTwo = false;
 
     bool debug_llvm = false;

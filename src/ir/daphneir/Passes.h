@@ -63,7 +63,8 @@ namespace mlir::daphne {
     std::unique_ptr<Pass> createSpecializeGenericFunctionsPass(const DaphneUserConfig& cfg);
     std::unique_ptr<Pass> createVectorizeComputationsPass();
     std::unique_ptr<Pass> createWhileLoopInvariantCodeMotionPass();
-    std::unique_ptr<Pass> createHelloWorldPass();
+    std::unique_ptr<Pass> createHelloWorldPass();   
+    std::unique_ptr<Pass> createDelilahInitPass();   
     std::unique_ptr<Pass> createAddTwoPass();
     
 #ifdef USE_CUDA

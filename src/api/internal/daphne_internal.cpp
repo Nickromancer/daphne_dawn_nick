@@ -332,6 +332,10 @@ int startDAPHNE(int argc, const char** argv, DaphneLibResult* daphneLibRes, int 
             "enable-helloWorld", cat(daphneOptions),
 	    desc("Enable Hello World!")
     );
+    static opt<bool> enableDelilahInit (
+            "enable-delilahInit", cat(daphneOptions),
+	    desc("Enable Delilah Init")
+    );
     static opt<bool> enableAddTwo (
             "enable-addTwo", cat(daphneOptions),
 	    desc("Enable AddTwo")
@@ -508,6 +512,9 @@ int startDAPHNE(int argc, const char** argv, DaphneLibResult* daphneLibRes, int 
 
     if(enableHelloWorld) {
 	user_config.enable_helloWorld = true;
+    }
+    if(enableDelilahInit) {
+	user_config.enable_delilahInit = true;
     }
 
     if(enableAddTwo) {
