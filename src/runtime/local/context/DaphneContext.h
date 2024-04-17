@@ -55,8 +55,6 @@ struct DaphneContext {
     // creating an individual struct/class for them and adding a single member
     // of that type here, in order to separate concerns and allow a  high-level
     // overview of the context information.
-
-
     std::vector<std::unique_ptr<IContext>> cuda_contexts;
     std::vector<std::unique_ptr<IContext>> fpga_contexts;
     std::vector<std::unique_ptr<IContext>> delilah_contexts;

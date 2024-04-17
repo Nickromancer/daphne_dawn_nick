@@ -7,7 +7,7 @@
 #include <liburing.h>
 #include <iostream>
 
-int delilahInit(DCTX(ctx)) 
+inline void delilahInit(DCTX(ctx)) 
 {
     //Delilah Context contains:
     // struct io_uring ring;
@@ -17,14 +17,17 @@ int delilahInit(DCTX(ctx))
     // int ret, fd
 
     int ret, fd;
+    auto DelilahContext = ctx->getDelilahContext(0); 
+/* 
+[error]: Got an abort signal from the execution engine. Most likely an exception in a shared library. Check logs!
+[error]: Execution error: Returning from signal 11 
+*/
     std::cout << "Creating init";
-    auto DelilahContext = ctx->getDelilahContext(0);  
     fd = DelilahContext->fd;
 
     //----------------------------------------------
     // Create io_uring queue
     //---------------------------------------------
-
     DelilahContext->p.flags = IORING_SETUP_SQE128;
   
     /* Initialize io_uring queue with four entries */
@@ -32,7 +35,7 @@ int delilahInit(DCTX(ctx))
 
     if (DelilahContext->ret) {
     fprintf(stderr, "Cannot init queue\n");
-    return 2;
+    //return 2;
     }
 
     /* Get the next free submission queue entry or fail */
@@ -40,10 +43,11 @@ int delilahInit(DCTX(ctx))
 
     if (!DelilahContext->sqe) {
     fprintf(stderr, "Cannot get SQE\n");
-    return 4;
+    //return 4;
     }
+
 
     //TODO: make the rest
 
-    return 0;
+    //return 0;
 }

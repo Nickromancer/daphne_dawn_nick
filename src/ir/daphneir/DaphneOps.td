@@ -1486,7 +1486,8 @@ def Daphne_CreateDelilahContextOp : Daphne_Op<"createDelilahContext", []> {
     let results = (outs);
 }
 
-def Daphne_DelilahInitOp : Daphne_Op<"delilahInit", []> {
+def Daphne_DelilahInitOp : Daphne_Op<"delilahInit"> {
+    let summary = "Initiates the Delilah Context";
     let results = (outs);
 }
 

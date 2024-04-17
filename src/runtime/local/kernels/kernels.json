@@ -832,12 +832,7 @@
             "templateParams": [],
             "runtimeParams": []
         },
-        "api": [
-            {
-                "name":  ["DELILAH", "CPP"],
-                "instantiations": []
-            }
-        ]
+	    "instantiations": [[]]
     },
     {
         "kernelTemplate": {
