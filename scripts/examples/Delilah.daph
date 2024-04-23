@@ -1,3 +1,4 @@
 //helloWorld();
 //delilahDestroy();
-delilahInit("/dev/delilah0");
+pathing = "/dev/delilah0";
+delilahInit(pathing);

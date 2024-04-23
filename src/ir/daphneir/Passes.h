@@ -74,6 +74,9 @@ namespace mlir::daphne {
 #ifdef USE_FPGAOPENCL
     std::unique_ptr<Pass> createMarkFPGAOPENCLOpsPass(const DaphneUserConfig& cfg);
 #endif
+#ifdef USE_DELILAH
+    std::unique_ptr<Pass> createDelilahInitPass(const DaphneUserConfig& cfg);
+#endif
 
 #define GEN_PASS_REGISTRATION
 #include "ir/daphneir/Passes.h.inc"

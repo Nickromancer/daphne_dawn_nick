@@ -69,7 +69,7 @@ void InsertDaphneContextPass::runOnOperation()
     }
 #endif
 #ifdef USE_DELILAH
-    if(user_config.use_fpgaopencl) {
+    if(user_config.use_delilah) {
         builder.create<daphne::CreateDelilahContextOp>(loc);
     }
 #endif

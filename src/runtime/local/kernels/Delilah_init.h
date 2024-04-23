@@ -19,12 +19,14 @@ inline void delilahInit(const char * path, DCTX(ctx))
     int ret, fd;
     // "/dev/delilah0"
     fd = open(path, O_RDWR);    
+    std::cout << "Creating init1 \n";
+
     auto DelilahContext = ctx->getDelilahContext(0); 
 /* 
 [error]: Got an abort signal from the execution engine. Most likely an exception in a shared library. Check logs!
 [error]: Execution error: Returning from signal 11 
 */
-    std::cout << "Creating init";
+    std::cout << "Creating init2 \n";
     fd = DelilahContext->fd;
 
     //----------------------------------------------

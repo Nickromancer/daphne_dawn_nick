@@ -23,8 +23,8 @@
 // Convenience function
 // ****************************************************************************
 
-namespace DELILAH {
-    static void createDELILAHContext(DCTX(ctx)) {
+namespace Delilah {
+    static void createDelilahContext(DCTX(ctx)) {
         // ToDo: one context per device
         ctx->delilah_contexts.emplace_back(DelilahContext::createDelilahContext(0));
     }

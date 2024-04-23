@@ -163,6 +163,7 @@ bool DaphneIrExecutor::runPasses(mlir::ModuleOp module) {
 	pm.addPass(mlir::daphne::createHelloWorldPass());
     if (userConfig_.enable_delilahInit)
 	pm.addPass(mlir::daphne::createDelilahInitPass());
+    pm.addPass(mlir::daphne::createPrintIRPass("IR after Delilah Init:"));
     if (userConfig_.enable_addTwo)
 	pm.addPass(mlir::daphne::createAddTwoPass());
     // For now, in order to use the distributed runtime we also require the
