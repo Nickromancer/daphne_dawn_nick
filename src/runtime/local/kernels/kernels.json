@@ -830,7 +830,12 @@
             "opName": "delilahInit",
             "returnType": "void",
             "templateParams": [],
-            "runtimeParams": []
+            "runtimeParams": [
+                {
+                    "type": "const char *",
+                    "name": "path"
+                }
+            ]
         },
 	    "instantiations": [[]]
     },

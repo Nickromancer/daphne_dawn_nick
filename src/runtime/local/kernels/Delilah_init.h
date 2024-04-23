@@ -7,7 +7,7 @@
 #include <liburing.h>
 #include <iostream>
 
-inline void delilahInit(DCTX(ctx)) 
+inline void delilahInit(const char * path, DCTX(ctx)) 
 {
     //Delilah Context contains:
     // struct io_uring ring;
@@ -17,6 +17,8 @@ inline void delilahInit(DCTX(ctx))
     // int ret, fd
 
     int ret, fd;
+    // "/dev/delilah0"
+    fd = open(path, O_RDWR);    
     auto DelilahContext = ctx->getDelilahContext(0); 
 /* 
 [error]: Got an abort signal from the execution engine. Most likely an exception in a shared library. Check logs!

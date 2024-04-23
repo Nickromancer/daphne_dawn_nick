@@ -1241,9 +1241,12 @@ antlrcpp::Any DaphneDSLBuiltins::build(mlir::Location loc, const std::string & f
     // ********************************************************************
 
     if(func == "delilahInit") {
-    return builder.create<DelilahInitOp>(loc);
+        checkNumArgsExact(func, numArgs, 1);
+
+    return builder.create<DelilahInitOp>(loc, args[0]);
     }
-    
+
+
     // ********************************************************************
     // delilah_destroy function
     // ********************************************************************
