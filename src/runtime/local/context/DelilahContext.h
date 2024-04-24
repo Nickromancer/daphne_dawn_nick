@@ -20,7 +20,6 @@ public:
     struct io_uring_sqe* sqe;
     struct io_uring_cqe* cqe;
     struct io_uring_params p = {};
-    string path = "/dev/delilah0";
     int fd = -1;
     int ret = -1;
 

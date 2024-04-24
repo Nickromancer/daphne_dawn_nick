@@ -805,12 +805,9 @@
             "templateParams": [],
             "runtimeParams": []
         },
-        "api": [
-            {
-                "name":  ["Delilah"],
-                "instantiations": [[]]
-
-            }]
+        "instantiations": [
+            []
+        ]
     },
     {
         "kernelTemplate": {

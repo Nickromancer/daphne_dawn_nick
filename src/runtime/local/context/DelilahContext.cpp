@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void DelilahContext::destroy() spdlog::debug("Destroying FPGA context...");
+void DelilahContext::destroy() spdlog::debug("Destroying Delilah context...");
 
 void DelilahContext::init()
 {
