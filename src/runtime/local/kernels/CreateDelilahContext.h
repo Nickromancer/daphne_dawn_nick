@@ -23,10 +23,10 @@
 // Convenience function
 // ****************************************************************************
 
-    static void createDelilahContext(DCTX(ctx)) {
+        static void createDelilahContext(DCTX(ctx)) {
         // ToDo: one context per device
-        //ctx->delilah_contexts.emplace_back(DelilahContext::createDelilahContext(0));
-        ctx->delilah_contexts = DelilahContext::createDelilahContext(0);
+        ctx->delilah_contexts.emplace_back(DelilahContext::createDelilahContext(0));
+        //ctx->delilah_contexts = DelilahContext::createDelilahContext(0);
         //ctx->distributed_context = DistributedContext::createDistributedContext(ctx->config);
 
     }

@@ -91,6 +91,9 @@ set(SOURCES_cpp_kernels
         ${PREFIX}/MatMul.cpp
         ${PROJECT_BINARY_DIR}/src/runtime/local/kernels/kernels.cpp
         ${PROJECT_SOURCE_DIR}/src/runtime/local/kernels/CreateDaphneContext.cpp
+        ${PREFIX}/CreateDelilahContext.h
+        ${PROJECT_SOURCE_DIR}/src/runtime/local/context/DelilahContext.h
+        ${PROJECT_SOURCE_DIR}/src/runtime/local/context/DelilahContext.cpp
         ${PROJECT_SOURCE_DIR}/src/runtime/local/kernels/Pooling.cpp
         ${PROJECT_SOURCE_DIR}/src/runtime/local/kernels/VectorizedPipeline.h
         ${PROJECT_SOURCE_DIR}/src/runtime/local/vectorized/MTWrapper_dense.cpp

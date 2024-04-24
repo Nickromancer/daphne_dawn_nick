@@ -1,5 +1,6 @@
 #pragma once
 
+#include <runtime/local/context/DaphneContext.h>
 #include <cassert>
 #include <iostream>
 #include <memory>
