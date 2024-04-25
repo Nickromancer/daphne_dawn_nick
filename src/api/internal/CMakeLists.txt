@@ -35,6 +35,10 @@ if(USE_FPGAOPENCL)
     list(APPEND LIBS FPGAOPENCLKernels)
 endif()
 
+if(USE_DELILAH)
+    list(APPEND LIBS DelilahKernels)
+endif()
+
 # ************************************************************************
 # DaphneInternal static library
 # ************************************************************************

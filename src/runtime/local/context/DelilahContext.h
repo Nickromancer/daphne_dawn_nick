@@ -1,6 +1,6 @@
 #pragma once
 
-#include <runtime/local/context/DaphneContext.h>
+#include "DaphneContext.h"
 #include <cassert>
 #include <iostream>
 #include <memory>
@@ -25,6 +25,8 @@ public:
     int ret = -1;
 
     static std::unique_ptr<IContext> createDelilahContext(int id);
+
+    void destroy() override;
 
 private:
     void init();

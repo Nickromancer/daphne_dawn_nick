@@ -1,4 +1,5 @@
-#include "runtime/local/context/DelilahContext.h"
+//#include "runtime/local/context/DelilahContext.h"
+#include "DelilahContext.h"
 #include <spdlog/spdlog.h>
 #include <stdio.h>
 
@@ -11,8 +12,10 @@
 
 using namespace std;
 
-void DelilahContext::destroy() spdlog::debug("Destroying Delilah context...");
-
+void DelilahContext::destroy() 
+{
+    spdlog::debug("Destroying Delilah context...");
+}
 void DelilahContext::init()
 {
     spdlog::debug("creating Delilah Context...");
@@ -21,12 +24,12 @@ void DelilahContext::init()
     fd = open(path, O_RDWR);
     if (fd < 0) {
         perror("Cannot open Delilah device");
-        return 3;
+        return;
     }
 }
 std::unique_ptr<IContext> DelilahContext::createDelilahContext(int device_id) 
 {
-    DelilahContext* ctx = std::unique_ptr<DelilahContext>(new DelilahContext(dev_id));
+    auto ctx = std::unique_ptr<DelilahContext>(new DelilahContext(dev_id));
     ctx->init();
 
     return ctx;

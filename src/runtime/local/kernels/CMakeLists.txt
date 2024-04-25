@@ -92,8 +92,8 @@ set(SOURCES_cpp_kernels
         ${PROJECT_BINARY_DIR}/src/runtime/local/kernels/kernels.cpp
         ${PROJECT_SOURCE_DIR}/src/runtime/local/kernels/CreateDaphneContext.cpp
         ${PREFIX}/CreateDelilahContext.h
-        ${PROJECT_SOURCE_DIR}/src/runtime/local/context/DelilahContext.h
         ${PROJECT_SOURCE_DIR}/src/runtime/local/context/DelilahContext.cpp
+        ${PROJECT_SOURCE_DIR}/src/runtime/local/context/DelilahContext.h
         ${PROJECT_SOURCE_DIR}/src/runtime/local/kernels/Pooling.cpp
         ${PROJECT_SOURCE_DIR}/src/runtime/local/kernels/VectorizedPipeline.h
         ${PROJECT_SOURCE_DIR}/src/runtime/local/vectorized/MTWrapper_dense.cpp
@@ -113,6 +113,9 @@ else()
     list(APPEND LIBS LLVMSupport Util MLIRDaphneInference)
 endif()
 
+if(USE_DELILAH)
+   list(APPEND LIBS DelilahKernels)
+endif()
 
 list(APPEND LIBS DaphneMetaDataParser MLIRDaphne MLIRDaphneTransforms)
 list(APPEND LIBS Eigen3::Eigen Arrow::arrow_shared Parquet::parquet_shared)
